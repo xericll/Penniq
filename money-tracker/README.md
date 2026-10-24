@@ -36,11 +36,11 @@ How it works:
 
 ## Deploy
 
-Live at https://penniq.netlify.app (Netlify). `netlify.toml` holds the build command, publish folder and headers; `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` are set in the Netlify project settings.
+Live at https://penniq.pages.dev (Cloudflare Pages, connected to GitHub `xericll/Penniq`; every push to `main` deploys). Root directory `money-tracker`, build command `npm run build`, output `dist`; headers in `public/_headers`; `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` are set in the Cloudflare project settings.
 
 On another host:
 
-`npm run build` and upload the `dist/` folder to any static host (Netlify, Vercel, Cloudflare Pages, GitHub Pages…). Serve it over **HTTPS** so the offline service worker and "Add to Home Screen" work.
+`npm run build` and upload the `dist/` folder to any static host (Cloudflare Pages, Vercel, GitHub Pages…). Serve it over **HTTPS** so the offline service worker and "Add to Home Screen" work.
 
 ## Stack
 

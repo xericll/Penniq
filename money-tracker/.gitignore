@@ -8,5 +8,4 @@ coverage/
 !.env.example
 !.env.artifact
 publish/
-.netlify
 public/ocr/

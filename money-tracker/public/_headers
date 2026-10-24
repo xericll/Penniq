@@ -1,4 +1,4 @@
-# Cloudflare Pages: same headers netlify.toml set.
+# Cloudflare Pages response headers.
 # The service worker must never be served stale, or updates would not reach installed apps.
 /sw.js
   Cache-Control: no-cache
