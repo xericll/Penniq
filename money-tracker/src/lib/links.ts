@@ -27,7 +27,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 ];
 
 /** The public address of the app, used by "Share app" and on shared achievement cards. */
-export const APP_URL = 'https://penniq.netlify.app';
+export const APP_URL = 'https://penniq.pages.dev';
 
 /** The store page once Penniq is on Google Play; until then "Rate app" collects stars and a comment in the app. */
 export const STORE_URL = '';

@@ -47,10 +47,10 @@ Penniq (formerly "Qirsh / قرش") is the user's cash + bank wallet web app; eac
 
 Project `penniq` (ref `ninsqhprdpswdqcthyhc`, org `penniq`, West EU / Ireland, free plan). URL and publishable key are in `money-tracker/.env`. The Supabase connector is authorised for one organisation at a time; if the project is not listed, the user has to reconnect it and pick the `penniq` organisation.
 
-Edge function `assistant` is deployed from `money-tracker/supabase/functions/assistant/index.ts` with `verify_jwt: false` (it checks the session itself). Netlify does not deploy it: after editing the file, redeploy it with the Supabase connector. Its AI key is a function secret the user sets in the dashboard; never ask for the key in chat.
+Edge function `assistant` is deployed from `money-tracker/supabase/functions/assistant/index.ts` with `verify_jwt: false` (it checks the session itself). Cloudflare does not deploy it: after editing the file, redeploy it with the Supabase connector. Its AI key is a function secret the user sets in the dashboard; never ask for the key in chat.
 
 ## Published copy
 
-Live site (full app with accounts): https://penniq.netlify.app — Netlify project `penniq` (id `f8f09c09-a6ff-4ce3-8d85-388e64055e94`, team `ericsama0050`). Redeploy with the Netlify connector's deploy-site operation from `money-tracker/`; Netlify builds it per `netlify.toml`, and the Supabase variables live in the Netlify project settings. Supabase Auth has that URL as Site URL and e-mail confirmation turned off.
+Live site (full app with accounts): https://penniq.pages.dev — Cloudflare Pages project `penniq` (account Ericsama0050@gmail.com), connected to GitHub `xericll/Penniq` (branch `main`): every push to `main` builds and deploys automatically. Build settings: root directory `money-tracker`, command `npm run build`, output `dist`; Node comes from `money-tracker/.node-version`; headers from `money-tracker/public/_headers`. `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` are environment variables of the Cloudflare project. Install uses npm (`package-lock.json`); do not add a `bun.lock` again, or Cloudflare switches to bun and fails. The old Netlify site (https://penniq.netlify.app, project id `f8f09c09-a6ff-4ce3-8d85-388e64055e94`) and `netlify.toml` are no longer the published copy (moved 2026-10-24).
 
 Claude artifact (older, device-only copy): https://claude.ai/artifact/HVaCm3fDHLHhMmKotjnkXz — update it with `npm run pack`, then publish `money-tracker/publish/penniq.html` to that URL.

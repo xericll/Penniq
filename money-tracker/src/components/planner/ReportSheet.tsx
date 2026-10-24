@@ -262,7 +262,7 @@ function PrintReport({ start, end }: { start: Date; end: Date }) {
           </table>
         )}
       </section>
-      <footer className="print-foot">Penniq · penniq.netlify.app · {t('report.generated', { date: dateLabel(new Date()) })}</footer>
+      <footer className="print-foot">Penniq · penniq.pages.dev · {t('report.generated', { date: dateLabel(new Date()) })}</footer>
     </div>
   );
 }
