@@ -1,0 +1,6 @@
+# Read when the edge functions are deployed.
+
+[functions.assistant]
+# The gateway's built-in JWT check only understands the legacy keys; the function verifies
+# the user's session itself (see supabase/functions/assistant/index.ts).
+verify_jwt = false

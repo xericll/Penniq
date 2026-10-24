@@ -1,0 +1,758 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   PENNIQ — "Soft Glass" design system
+   Frosted liquid-glass surfaces floating over a softly lit canvas:
+   specular rims, iridescent glints, lensing (Chromium), tactile presses.
+   Every colour is a semantic token; editions only swap token values.
+   ========================================================================== */
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elev: var(--bg-elev);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-hi: var(--accent-hi);
+  --color-on-accent: var(--on-accent);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-in: var(--in);
+  --color-out: var(--out);
+  --color-cash: var(--cash);
+  --color-bank: var(--bank);
+
+  --font-sans: "Readex Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Archivo", "Readex Pro", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ---------- Editions ---------------------------------------------------- */
+
+:root,
+html[data-edition="linen"] {
+  color-scheme: light;
+  --paper: #fbf9f5;
+  --bg: #ebe7e0;
+  --bg-elev: rgba(250, 248, 244, 0.78);
+  --surface: rgba(255, 255, 255, 0.5);
+  --surface-2: rgba(46, 38, 26, 0.055);
+  --line: rgba(46, 38, 26, 0.09);
+  --line-strong: rgba(46, 38, 26, 0.17);
+  --ink: #1f1e1b;
+  --ink-2: #57544c;
+  --ink-3: #67635a;
+  --accent: #56654a;
+  --accent-hi: #93a27d;
+  --accent-lo: #3d4935;
+  --on-accent: #f7f6f1;
+  --primary: #23221e;
+  --on-primary: #f6f4ef;
+  --in: #3c7a48;
+  --out: #b1453a;
+  --cash: #a67c32;
+  --bank: #4e6f8f;
+  --glass-top: rgba(255, 255, 255, 0.66);
+  --glass-bottom: rgba(255, 255, 255, 0.36);
+  --rim: rgba(255, 255, 255, 0.7);
+  --rim-strong: rgba(255, 255, 255, 0.98);
+  --shadow: 46 38 26;
+  --shine: rgba(255, 255, 255, 0.75);
+  --scrim: rgba(58, 50, 38, 0.26);
+  --blob-1: #d8cbb4;
+  --blob-2: #c5d1b6;
+  --blob-3: #ead3c9;
+  --blob-4: #d0d8e2;
+  --leaf: rgba(52, 60, 36, 0.13);
+  --window: rgba(255, 250, 238, 0.55);
+}
+
+html[data-edition="mist"] {
+  color-scheme: light;
+  --paper: #fbfbfc;
+  --bg: #e6e7ea;
+  --bg-elev: rgba(246, 247, 249, 0.8);
+  --surface: rgba(255, 255, 255, 0.5);
+  --surface-2: rgba(28, 32, 42, 0.055);
+  --line: rgba(28, 32, 42, 0.09);
+  --line-strong: rgba(28, 32, 42, 0.17);
+  --ink: #1c1d21;
+  --ink-2: #53555c;
+  --ink-3: #64666d;
+  --accent: #434a5a;
+  --accent-hi: #98a1b4;
+  --accent-lo: #2b303b;
+  --on-accent: #f4f5f8;
+  --primary: #1f2024;
+  --on-primary: #f4f5f7;
+  --in: #3a7a55;
+  --out: #b2433f;
+  --cash: #9a7a3a;
+  --bank: #4a6a93;
+  --glass-top: rgba(255, 255, 255, 0.68);
+  --glass-bottom: rgba(255, 255, 255, 0.36);
+  --rim: rgba(255, 255, 255, 0.72);
+  --rim-strong: rgba(255, 255, 255, 1);
+  --shadow: 30 34 44;
+  --shine: rgba(255, 255, 255, 0.8);
+  --scrim: rgba(30, 34, 44, 0.24);
+  --blob-1: #d6d9e3;
+  --blob-2: #e2d6e6;
+  --blob-3: #d3e5e0;
+  --blob-4: #eee1d3;
+  --leaf: rgba(34, 40, 52, 0.09);
+  --window: rgba(255, 255, 255, 0.6);
+}
+
+html[data-edition="sage"] {
+  color-scheme: light;
+  --paper: #f8faf5;
+  --bg: #e1e6dc;
+  --bg-elev: rgba(245, 248, 242, 0.8);
+  --surface: rgba(255, 255, 255, 0.48);
+  --surface-2: rgba(30, 44, 26, 0.06);
+  --line: rgba(30, 44, 26, 0.09);
+  --line-strong: rgba(30, 44, 26, 0.17);
+  --ink: #1b2019;
+  --ink-2: #4d5549;
+  --ink-3: #5e665a;
+  --accent: #46663f;
+  --accent-hi: #8fb083;
+  --accent-lo: #31492c;
+  --on-accent: #f3f7f0;
+  --primary: #1f261c;
+  --on-primary: #f2f5ef;
+  --in: #357a41;
+  --out: #ad4a3a;
+  --cash: #9a7a30;
+  --bank: #466d86;
+  --glass-top: rgba(255, 255, 255, 0.64);
+  --glass-bottom: rgba(255, 255, 255, 0.34);
+  --rim: rgba(255, 255, 255, 0.7);
+  --rim-strong: rgba(255, 255, 255, 0.98);
+  --shadow: 30 44 26;
+  --shine: rgba(255, 255, 255, 0.75);
+  --scrim: rgba(30, 44, 26, 0.26);
+  --blob-1: #c3d4b4;
+  --blob-2: #e4e2c6;
+  --blob-3: #b9d3cb;
+  --blob-4: #dfe8d4;
+  --leaf: rgba(34, 58, 30, 0.14);
+  --window: rgba(252, 255, 240, 0.55);
+}
+
+html[data-edition="blush"] {
+  color-scheme: light;
+  --paper: #fdf8f6;
+  --bg: #efe4df;
+  --bg-elev: rgba(252, 247, 245, 0.8);
+  --surface: rgba(255, 255, 255, 0.5);
+  --surface-2: rgba(60, 30, 26, 0.055);
+  --line: rgba(60, 30, 26, 0.09);
+  --line-strong: rgba(60, 30, 26, 0.17);
+  --ink: #231c1b;
+  --ink-2: #5d5150;
+  --ink-3: #6e6060;
+  --accent: #8f5149;
+  --accent-hi: #d19a8f;
+  --accent-lo: #6b3a34;
+  --on-accent: #fbf5f3;
+  --primary: #2a2120;
+  --on-primary: #faf4f2;
+  --in: #3c7a4c;
+  --out: #b23d3a;
+  --cash: #a0763a;
+  --bank: #5a6a95;
+  --glass-top: rgba(255, 255, 255, 0.66);
+  --glass-bottom: rgba(255, 255, 255, 0.36);
+  --rim: rgba(255, 255, 255, 0.72);
+  --rim-strong: rgba(255, 255, 255, 1);
+  --shadow: 60 32 28;
+  --shine: rgba(255, 255, 255, 0.78);
+  --scrim: rgba(60, 32, 28, 0.24);
+  --blob-1: #f0cfc4;
+  --blob-2: #e6d2e4;
+  --blob-3: #f3dfc6;
+  --blob-4: #d9d6ea;
+  --leaf: rgba(70, 40, 34, 0.1);
+  --window: rgba(255, 246, 240, 0.6);
+}
+
+html[data-edition="night"] {
+  color-scheme: dark;
+  --paper: #1d1e20;
+  --bg: #101112;
+  --bg-elev: rgba(30, 31, 34, 0.78);
+  --surface: rgba(255, 255, 255, 0.055);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --ink: #f1efea;
+  --ink-2: #b6b2aa;
+  --ink-3: #908c85;
+  --accent: #c8d4b0;
+  --accent-hi: #e8efd9;
+  --accent-lo: #8f9c78;
+  --on-accent: #151712;
+  --primary: #f1efea;
+  --on-primary: #141414;
+  --in: #93d6a0;
+  --out: #ff9585;
+  --cash: #e0c07a;
+  --bank: #93b4e0;
+  --glass-top: rgba(255, 255, 255, 0.1);
+  --glass-bottom: rgba(255, 255, 255, 0.035);
+  --rim: rgba(255, 255, 255, 0.12);
+  --rim-strong: rgba(255, 255, 255, 0.26);
+  --shadow: 0 0 0;
+  --shine: rgba(255, 255, 255, 0.2);
+  --scrim: rgba(0, 0, 0, 0.5);
+  --blob-1: #2c3b31;
+  --blob-2: #3a2e45;
+  --blob-3: #1f3046;
+  --blob-4: #43372a;
+  --leaf: rgba(0, 0, 0, 0);
+  --window: rgba(255, 255, 255, 0.03);
+}
+
+/* Unlayered on purpose: wins over any host page reset that loads before this sheet. */
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ---------- Base -------------------------------------------------------- */
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    overscroll-behavior-y: none;
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 30%, transparent);
+    color: var(--ink);
+  }
+
+  button,
+  [role="button"],
+  a,
+  label[for],
+  summary {
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Prevent iOS zoom on focus: inputs are at least 16px */
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 14px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* Thin, quiet scrollbars on desktop */
+  @media (hover: hover) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--line-strong) transparent;
+    }
+  }
+}
+
+/* ---------- Components -------------------------------------------------- */
+
+@layer components {
+  /* Typography */
+  .font-display {
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    letter-spacing: -0.02em;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--ink-3);
+  }
+
+  html:lang(de) .eyebrow,
+  html:lang(en) .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 11px;
+  }
+
+  .serial {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums slashed-zero;
+  }
+
+  .accent-text {
+    background: linear-gradient(120deg, var(--accent-lo), var(--accent) 45%, var(--accent-hi) 70%, var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ---- Liquid glass ---------------------------------------------------- */
+
+  /* Frosted panel: gradient fill, blur, specular top edge and a long soft shadow. */
+  .glass,
+  .card {
+    position: relative;
+    isolation: isolate;
+    border-radius: 28px;
+    background: linear-gradient(180deg, var(--glass-top), var(--glass-bottom));
+    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    backdrop-filter: blur(24px) saturate(170%);
+    box-shadow:
+      inset 0 1px 0 var(--rim-strong),
+      inset 0 0 0 1px var(--rim),
+      0 1px 1px rgb(var(--shadow) / 0.05),
+      0 22px 48px -26px rgb(var(--shadow) / 0.38);
+  }
+
+  /* Specular rim: a bright arc on the top-left edge that fades around the shape. */
+  .glass::before,
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(150deg, var(--rim-strong), transparent 38%, transparent 70%, var(--rim) 100%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Raised glass capsule — the "droplet" used for active states. */
+  .glass-pill {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.5));
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    backdrop-filter: blur(12px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      inset 0 -1px 1px rgb(var(--shadow) / 0.08),
+      0 1px 2px rgb(var(--shadow) / 0.12),
+      0 8px 20px -8px rgb(var(--shadow) / 0.35);
+  }
+
+  html[data-edition="night"] .glass-pill {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.28),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.3),
+      0 8px 20px -8px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Iridescent rim — the faint rainbow glint along the top of liquid glass. */
+  .iris::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.25px;
+    background: conic-gradient(
+      from 210deg at 50% 50%,
+      rgba(255, 190, 230, 0.9),
+      rgba(190, 220, 255, 0.9),
+      rgba(200, 255, 215, 0.85),
+      rgba(255, 240, 190, 0.85),
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 190, 230, 0.9)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  /* Refraction: bends what is behind the glass (Chromium only; blur elsewhere). */
+  .lens {
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    backdrop-filter: blur(18px) saturate(180%);
+  }
+
+  html.lg-refract .lens {
+    backdrop-filter: url(#lg-lens) blur(6px) saturate(190%) brightness(1.04);
+  }
+
+  /* Recessed well (neumorphic inset) */
+  .inset {
+    background: var(--surface-2);
+    border-radius: 18px;
+    box-shadow:
+      inset 0 1px 2px rgb(var(--shadow) / 0.08),
+      inset 0 -1px 0 var(--rim);
+  }
+
+  .hairline {
+    border-color: var(--line);
+  }
+
+  .dashed-rule {
+    height: 1px;
+    background-image: linear-gradient(to right, var(--line-strong) 50%, transparent 0);
+    background-size: 8px 1px;
+  }
+
+  /* ---- Buttons --------------------------------------------------------- */
+
+  /* Every tappable thing: springs back past its size on release, flashes where touched. */
+  .press {
+    position: relative;
+    transition:
+      transform 560ms var(--ease-spring),
+      background-color 220ms ease,
+      border-color 220ms ease,
+      color 220ms ease,
+      box-shadow 260ms ease,
+      opacity 220ms ease;
+  }
+
+  .press::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(circle at var(--px, 50%) var(--py, 50%), var(--shine), transparent 62%);
+    opacity: 0;
+    transition: opacity 650ms ease;
+  }
+
+  .press:active:not(:disabled):not([aria-disabled="true"]) {
+    transform: scale(0.955);
+    transition-duration: 110ms;
+    transition-timing-function: ease-out;
+  }
+
+  .press:active:not(:disabled)::after {
+    opacity: 1;
+    transition-duration: 0ms;
+  }
+
+  /* Solid capsule for the one primary action on a screen. */
+  .btn-primary {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    color: var(--on-primary);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 55%),
+      var(--primary);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+      0 1px 2px rgb(var(--shadow) / 0.2),
+      0 14px 28px -14px rgb(var(--shadow) / 0.6);
+  }
+
+  html[data-edition="night"] .btn-primary {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 60%),
+      var(--primary);
+    box-shadow:
+      inset 0 1px 0 #fff,
+      0 14px 30px -14px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Keypad key: soft raised glass that sinks into the surface when pressed */
+  .key-glass {
+    background: linear-gradient(180deg, color-mix(in oklab, var(--glass-top) 90%, transparent), var(--glass-bottom));
+    box-shadow:
+      inset 0 1px 0 var(--rim-strong),
+      0 1px 1px rgb(var(--shadow) / 0.06),
+      0 6px 14px -10px rgb(var(--shadow) / 0.45);
+  }
+
+  .key-glass:active {
+    box-shadow:
+      inset 0 2px 5px rgb(var(--shadow) / 0.16),
+      inset 0 -1px 0 var(--rim);
+    background: var(--surface-2);
+  }
+
+  /* Chips */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 15px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: color-mix(in oklab, var(--glass-top) 70%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: var(--ink-2);
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 var(--rim);
+  }
+
+  .chip[aria-pressed="true"],
+  .chip[aria-checked="true"] {
+    background: var(--primary);
+    border-color: transparent;
+    color: var(--on-primary);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 6px 14px -8px rgb(var(--shadow) / 0.55);
+  }
+
+  /* Text inputs sit in a recessed well */
+  .field {
+    width: 100%;
+    min-height: 50px;
+    padding: 0 16px;
+    border-radius: 16px;
+    background: var(--surface-2);
+    border: 1px solid transparent;
+    color: var(--ink);
+    box-shadow: inset 0 1px 2px rgb(var(--shadow) / 0.08);
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .field::placeholder {
+    color: var(--ink-3);
+  }
+
+  .field:focus {
+    outline: none;
+    border-color: color-mix(in oklab, var(--accent) 60%, transparent);
+    background: var(--glass-top);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 16%, transparent);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Soft fade at the edges of horizontal chip rails */
+  .rail-fade {
+    mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  }
+
+  /* Receipt paper with a perforated top edge */
+  .perforated {
+    --hole: 7px;
+    mask:
+      radial-gradient(circle var(--hole) at 50% 0, transparent 98%, #000) top / calc(var(--hole) * 3) 51% repeat-x,
+      linear-gradient(#000, #000) bottom / 100% 50% no-repeat;
+  }
+}
+
+/* ---------- Privacy mode ------------------------------------------------ */
+
+.money {
+  display: inline-block;
+  unicode-bidi: isolate;
+  transition:
+    filter 280ms ease,
+    opacity 280ms ease;
+}
+
+html.amounts-hidden:not(.amounts-peeking) .money {
+  filter: blur(9px);
+  opacity: 0.6;
+  user-select: none;
+}
+
+/* ---------- Odometer digits -------------------------------------------- */
+
+.odo {
+  display: inline-flex;
+  align-items: baseline;
+  direction: ltr;
+  white-space: nowrap;
+}
+
+.odo-col {
+  display: inline-block;
+  height: 1.12em;
+  line-height: 1.12em;
+  overflow: hidden;
+  vertical-align: bottom;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 18%, #000 82%, transparent 100%);
+}
+
+.odo-strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 900ms var(--ease-out-soft);
+  will-change: transform;
+}
+
+.odo-strip > span {
+  height: 1.12em;
+  text-align: center;
+}
+
+/* ---------- Motion ------------------------------------------------------ */
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-slow {
+  animation: spin-slow 140s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes shake-x {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  80% {
+    transform: translateX(4px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-7px);
+  }
+  40%,
+  60% {
+    transform: translateX(7px);
+  }
+}
+
+.shake {
+  animation: shake-x 420ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6vw, 4vh, 0) scale(1.08);
+  }
+}
+
+@keyframes drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.05);
+  }
+  50% {
+    transform: translate3d(-5vw, -3vh, 0) scale(0.95);
+  }
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-1.2deg) translateY(0);
+  }
+  50% {
+    transform: rotate(1.4deg) translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .press:active:not(:disabled) {
+    transform: none;
+  }
+}

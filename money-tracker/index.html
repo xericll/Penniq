@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#EFEADF" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Penniq</title>
+    <meta name="description" content="Penniq — كل قرش بحسابه. محفظة الكاش والبنك وتتبع المصاريف بعملتك." />
+    <meta property="og:title" content="Penniq" />
+    <meta property="og:description" content="كل قرش بحسابه — محفظة الكاش والبنك وتتبع المصاريف" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Penniq" />
+    <script>
+      // Pre-paint: apply saved appearance, language and privacy before React mounts (no flash).
+      (function () {
+        try {
+          var LEGACY = {
+            indigo: 'navy', plum: 'navy', teal: 'olive', graphite: 'navy',
+            paper: 'parchment', mint: 'parchment', sky: 'parchment', rose: 'parchment', lavender: 'parchment',
+            'night-steel': 'navy', 'purple-dusk': 'navy', 'calm-green': 'olive', 'beige-black-brown': 'parchment',
+            'night-crimson': 'navy', espresso: 'parchment', sand: 'parchment',
+            linen: 'parchment', mist: 'parchment', sage: 'olive', blush: 'parchment', night: 'navy'
+          };
+          // Page colour (--bg) of every appearance in src/index.css.
+          var BG = { parchment: '#EFEADF', navy: '#1A2030', olive: '#33341F' };
+          var root = document.documentElement;
+          var pref = localStorage.getItem('qirsh_app_theme') || 'auto';
+          if (LEGACY[pref]) pref = LEGACY[pref];
+          if (pref !== 'auto' && !BG[pref]) pref = 'auto';
+          var resolved = pref;
+          if (pref === 'auto') {
+            var host = root.getAttribute('data-theme');
+            var dark = host === 'dark' || (host !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            resolved = dark ? 'navy' : 'parchment';
+          }
+          root.dataset.edition = resolved;
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', BG[resolved]);
+
+          if (localStorage.getItem('qirsh_amounts_hidden') === 'true') root.classList.add('amounts-hidden');
+
+          var lang = localStorage.getItem('qirsh_app_language');
+          if (lang !== 'ar' && lang !== 'de' && lang !== 'en') {
+            var nav = (navigator.language || '').toLowerCase();
+            lang = nav.indexOf('de') === 0 ? 'de' : nav.indexOf('en') === 0 ? 'en' : 'ar';
+          }
+          root.lang = lang;
+          root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Penniq needs JavaScript to run. — يحتاج Penniq إلى تفعيل JavaScript.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

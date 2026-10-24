@@ -1,0 +1,56 @@
+# Penniq — project notes for Claude
+
+Penniq (formerly "Qirsh / قرش") is the user's cash + bank wallet web app; each user picks one currency (it started euro-only). The app lives in `money-tracker/` (React 19, TypeScript strict, Vite 6, Tailwind 4, Motion). Full history, decisions and open tasks are in `PENNIQ-HANDOFF.md` (Arabic) — read it before larger changes.
+
+## Working with the user
+
+- The user writes Levantine Arabic; reply in Arabic.
+- They call this a very big project and care a lot about a distinctive, polished design.
+
+## Commands (run inside `money-tracker/`)
+
+- `npm run dev` — dev server on port 3000
+- `npm run build` — strict type-check + production build to `dist/`
+- `npm run lint` — type-check only
+- `npm run pack` — single-file build `publish/penniq.html` for the Claude artifact
+
+## Hard rules
+
+- Never rename the `localStorage` keys in `src/lib/storage.ts` (`my_*`, `qirsh_*`): they hold real user data.
+- The current design is the **brand design** from `C:\Users\erics\Pictures\Brands\Penniq_Brand_Guideline_v2.pdf` (approved 2026-10-20; preview in `design-preview-v3.html`). Three appearances + auto: `parchment` (light, default: parchment + olive **#515233** + coin gold), `navy` (dark, the guideline's Ledger Navy) and `olive` (dark green, with a parchment banknote). The balance card stays a banknote (guilloché, odometer, serial, watermark) framed by an **olive-leaf garland** (`Garland` in `src/components/ui/Olive.tsx`; the user asked for it instead of the old micro-text). Realistic olive branches (`OliveBranch`) overlap the cards and sway; motion: masked word reveal, gold light sweep and tilt on the note, flipping transfer coin, sliding nav dot, coin-drop splash. Fonts: Playfair Display (figures), Amiri (Arabic headings), Manrope (Latin), IBM Plex Sans Arabic (Arabic UI), DM Mono (serials). Earlier designs are archived: "Mint Edition" (ten editions) in `design-archive/mint-edition/`, "Soft Glass" in `design-archive/soft-glass/`. Do not reintroduce them unless asked.
+- The logo is the guideline's master artwork as vector paths in `src/components/ui/brandArt.ts` (extracted from PDF page 8): never redraw it or retype "Penniq" in a font. Use `<Logo>` / `<Mark>`; app icons and the favicon come from the same paths via `npm run icons`.
+- Appearances are set with `data-edition` on `<html>` (not `data-theme`, which host pages such as Claude artifacts stamp themselves). Their colours live only in `src/index.css` under `[data-edition="<id>"]` (the bare attribute, so the swatches in Settings can wear an appearance of their own); `index.html` repeats each `--bg` for the pre-paint script, and `ThemeContext.tsx` holds the id list and the legacy-id map (old edition ids map onto the three). Primary buttons (`.foil`) use `--primary`; gold coin elements use `.coin` / `--coin`; `text-foil` is bronze on parchment for contrast.
+- Every UI string goes through `t()` with ar / de / en entries in `src/i18n/translations.ts`. Arabic is primary and right-to-left.
+- Render amounts with `<Money>` / `<Odometer>` (keeps them left-to-right and blurs them in privacy mode).
+- Never hard-code a currency sign. The wallet has one user-chosen currency: read `currencySymbol` / `symbolFirst` from `useI18n()`, and change it only through `setCurrency()` from `useWallet()` so it syncs. Amounts are never converted. They keep two decimals, or three for the currencies that count in thousandths (KWD, BHD, OMR, JOD, TND, LYD): round with `roundMoney()` from `src/lib/ledger.ts`, never with a hard-coded `* 100`; its precision follows the wallet currency (`setMoneyPlaces()`, called by `LanguageContext`).
+- No third-party requests except the app's own Supabase project (EU region): accounts, sync, support messages and the `assistant` edge function. The app never calls an AI provider itself; the AI key exists only as the `GEMINI_API_KEY` secret of that function, which calls Google Gemini (`gemini-3.5-flash-lite`, picked by the user for its price) over plain `fetch`; the user chose Google over Claude on 2026-10-12. Fonts stay bundled via `@fontsource/*` and `@fontsource-variable/*`; add no analytics, CDNs or other outside calls (GDPR).
+- Assistant (`src/lib/assistant.ts`, `AssistantSheet.tsx`): the ready-made questions are answered on the device from the ledger. Free text reaches the model only for a signed-in user and only once the function reports the key is set; until then it is matched to the nearest ready-made answer. What is sent is `walletDigest()` — totals, categories, recent entries, never the people in the debts. The function (`supabase/functions/assistant/`) caps questions per account and day through `assistant_take()`.
+- Reminders belong to the device (`penniq_reminders`, not synced): `src/lib/reminders.ts` + `src/state/RemindersContext.tsx`. There is no push server, so they fire only while the app is open or in the background; one that passed while it was closed shows on the next open the same day. Do not describe them to the user as working with the app closed.
+- Support messages go to the `support_messages` table (a user inserts and reads their own; the team answers by filling `reply` / `status` in the dashboard). Social links and the support e-mail are in `src/lib/links.ts` and stay empty until the user supplies them.
+- Money lives in five ledgers: `cash` and `bank` (the wallet), `vault` (money kept aside), `loans` (money lent to others) and `owed` (money borrowed, balance negative). All of them are ordinary transactions in one list; debts are `kind: 'loan'` or `'borrow'`; repayments are `kind: 'repayment'` with `debtId` (one that is not a transfer moved no money: it only lowers the debt); a later increase is a `loan`/`borrow` that carries a `debtId`, so use `opensDebt()` to tell a new debt from an increase. The wallet total is cash + bank only, and statistics count only real wallet income and spending — use `isFlow()` / `isWallet()` from `src/lib/ledger.ts` instead of checking types by hand.
+- Essentials (fixed monthly incomes/costs) are a user-edited list, not transactions: `penniq_essentials` locally, `user_settings.essentials` in Supabase, changed through `setEssentials()`. Adding one creates a normal transaction.
+- Cloud sync: the device (`localStorage`) stays what the UI reads; `src/state/useCloudSync.ts` + `src/lib/cloud.ts` mirror it to Supabase through an outbox. Every change to the transaction list must go through `commit()` in `WalletContext` (that is what records it for upload); settings through `changeSettings()`.
+- Database changes go in a new file under `money-tracker/supabase/migrations/` and every table keeps row level security (`user_id = auth.uid()`). Only the publishable key belongs in `.env`; never a secret / service_role key.
+- A row level security policy must not query its own table: Postgres refuses the first write with "infinite recursion detected in policy". Put such a look-up in a `SECURITY DEFINER` function (see `support_sent_today()`), and try every new policy on the database as `authenticated` and `anon` inside a transaction that is rolled back before publishing.
+- The app must keep working with no Supabase variables (`supabase === null`): that is how the single-file artifact build runs (`--mode artifact`).
+- Planning tools (added 2026-10-23): assets, savings goals, quick buttons (templates), recurring payments, income split, automation rules and display prefs live in `src/state/PlannerContext.tsx`, each under its own device-only key (`penniq_assets`, `penniq_goals`, `penniq_templates`, `penniq_recurring`, `penniq_allocation`, `penniq_rules`, `penniq_prefs`; plus `penniq_lock`, `penniq_rating`, `penniq_recurring_seen`). They are **not synced yet** (that needs a `user_settings` migration); the entries they create are ordinary transactions and do sync. Their windows open through `useTools()` (`src/state/ToolsContext.tsx`), mounted in `App.tsx` → `ToolSheets`. Their strings are in `src/i18n/features.ts`, merged into the three dictionaries.
+- Assets are never part of the cash / bank balance. Every value goes through `assetValue()` (`src/lib/assets.ts`) and every price through `quote()` in `src/lib/prices.ts` (PriceService). No market provider is registered, so nothing is fetched; live prices are added there later. Prices are in the wallet currency (`priceCurrency`), never converted.
+- Goals keep the ids of their vault transfers (`contributions`); saved = those entries' sum, so deleting an entry lowers the goal. Transfers stay single entries (`account` → `toAccount`), never counted as income or spending.
+- Automation rules run inside `WalletContext.add()` on every new income / expense (pass `skipRules: true` for an entry the user already reviewed, e.g. a scanned receipt). Quick buttons, recurring payments and receipts record through `useRecord()` (`src/components/planner/QuickRecord.tsx`), which also offers the income split.
+- Receipt OCR is Tesseract.js in the browser; `scripts/copy-ocr.cjs` (runs before `dev` / `build`) copies its worker, WebAssembly cores and the German data into `public/ocr/`, so no CDN is used and the photo never leaves the device. Hidden in the artifact build.
+- PDF export is the browser's print dialog ("Save as PDF") on a report rendered into `#print-root` (print styles at the end of `index.css`), so Arabic is shaped correctly with the bundled fonts.
+- App lock (`src/lib/lock.ts`, `src/components/lock/AppLock.tsx`): salted PBKDF2 hashes of a 4-digit PIN and a recovery code, optional WebAuthn platform passkey. It hides the app, it does not encrypt data; "forgot PIN" (recovery code or account password) only removes the lock.
+- Wealth is a fifth tab (`#wealth`) in the desktop rail; on phones it is opened from its card on Home (a fifth dock tab does not fit the German labels at 360 px). Home-screen shortcuts open forms through `?do=expense|income|transfer` (`src/lib/launch.ts`).
+- After code changes: `npm run build` must pass, then format with `npx prettier --write "src/**/*.{ts,tsx}"`.
+
+## Supabase
+
+Project `penniq` (ref `ninsqhprdpswdqcthyhc`, org `penniq`, West EU / Ireland, free plan). URL and publishable key are in `money-tracker/.env`. The Supabase connector is authorised for one organisation at a time; if the project is not listed, the user has to reconnect it and pick the `penniq` organisation.
+
+Edge function `assistant` is deployed from `money-tracker/supabase/functions/assistant/index.ts` with `verify_jwt: false` (it checks the session itself). Netlify does not deploy it: after editing the file, redeploy it with the Supabase connector. Its AI key is a function secret the user sets in the dashboard; never ask for the key in chat.
+
+## Published copy
+
+Live site (full app with accounts): https://penniq.netlify.app — Netlify project `penniq` (id `f8f09c09-a6ff-4ce3-8d85-388e64055e94`, team `ericsama0050`). Redeploy with the Netlify connector's deploy-site operation from `money-tracker/`; Netlify builds it per `netlify.toml`, and the Supabase variables live in the Netlify project settings. Supabase Auth has that URL as Site URL and e-mail confirmation turned off.
+
+Claude artifact (older, device-only copy): https://claude.ai/artifact/HVaCm3fDHLHhMmKotjnkXz — update it with `npm run pack`, then publish `money-tracker/publish/penniq.html` to that URL.

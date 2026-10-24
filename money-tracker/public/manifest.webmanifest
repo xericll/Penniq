@@ -1,0 +1,84 @@
+{
+  "name": "Penniq",
+  "short_name": "Penniq",
+  "description": "كل قرش بحسابه — محفظة الكاش والبنك وتتبع المصاريف بعملتك",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1f2635",
+  "theme_color": "#1f2635",
+  "categories": [
+    "finance",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "إضافة مصروف",
+      "short_name": "مصروف",
+      "description": "Ausgabe erfassen · Add expense",
+      "url": "./?do=expense",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "إضافة دخل",
+      "short_name": "دخل",
+      "description": "Einnahme erfassen · Add income",
+      "url": "./?do=income",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "تحويل بين الكاش والبنك",
+      "short_name": "تحويل",
+      "description": "Umbuchung · Transfer",
+      "url": "./?do=transfer",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

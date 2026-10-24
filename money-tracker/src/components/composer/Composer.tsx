@@ -1,0 +1,644 @@
+import { AnimatePresence, motion } from 'motion/react';
+import {
+  AlertTriangle,
+  ArrowDownLeft,
+  ArrowLeftRight,
+  ArrowUpRight,
+  Camera,
+  Check,
+  Landmark,
+  PencilLine,
+  Plus,
+  Wallet,
+  Zap,
+} from 'lucide-react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useI18n } from '../../i18n/LanguageContext';
+import { CATEGORIES, type CategoryId } from '../../lib/categories';
+import { haptic } from '../../lib/haptics';
+import { moneyPlaces, newId, roundMoney } from '../../lib/ledger';
+import { OCR_AVAILABLE } from '../../lib/receipt';
+import { MAX_TEMPLATES } from '../../lib/templates';
+import { DEFAULT_REASON, TRANSFER_REASONS } from '../../lib/sources';
+import { usePlanner } from '../../state/PlannerContext';
+import { useToast } from '../../state/ToastContext';
+import { useWallet } from '../../state/WalletContext';
+import type { AccountType, Transaction, TransactionType, TransferDirection } from '../../types';
+import { Keypad } from '../ui/Keypad';
+import { Money } from '../ui/Money';
+import { Segmented } from '../ui/Segmented';
+import { Sheet } from '../ui/Sheet';
+
+export interface ComposerIntent {
+  type: TransactionType;
+  account?: AccountType;
+  direction?: TransferDirection;
+  amount?: number;
+}
+
+interface ComposerProps {
+  open: boolean;
+  intent: ComposerIntent;
+  onClose: () => void;
+  onEditList: (kind: 'income' | 'expense') => void;
+  /** Another sheet is on top — ignore hardware keys. */
+  suspended?: boolean;
+  /** Called after an income was recorded (the income split may be offered). */
+  onIncome?: (tx: Transaction) => void;
+  /** A receipt photo was picked: it is read and offered for review elsewhere. */
+  onScan?: (file: File) => void;
+}
+
+const MAX_INT_DIGITS = 9;
+
+export function Composer({ open, intent, onClose, onEditList, suspended = false, onIncome, onScan }: ComposerProps) {
+  const { t, lang, money, accountName, currencySymbol, symbolFirst, localize } = useI18n();
+  const { balances, quickAmounts, incomeSources, expenseSources, add, remove } = useWallet();
+  const toast = useToast();
+  const { templates, setTemplates } = usePlanner();
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const [asTemplate, setAsTemplate] = useState(false);
+
+  const [type, setType] = useState<TransactionType>('expense');
+  const [account, setAccount] = useState<AccountType>('cash');
+  const [direction, setDirection] = useState<TransferDirection>('cash_to_bank');
+  const [raw, setRaw] = useState('');
+  const [category, setCategory] = useState<CategoryId | null>(null);
+  const [preset, setPreset] = useState('');
+  const [note, setNote] = useState('');
+  const [noteOpen, setNoteOpen] = useState(false);
+  const [shakeKey, setShakeKey] = useState(0);
+  const [swapTurns, setSwapTurns] = useState(0);
+
+  useEffect(() => {
+    if (!open) return;
+    setType(intent.type);
+    setAccount(intent.account ?? 'cash');
+    setDirection(intent.direction ?? (intent.account === 'bank' ? 'bank_to_cash' : 'cash_to_bank'));
+    setRaw(intent.amount ? String(intent.amount) : '');
+    setCategory(null);
+    setPreset('');
+    setNote('');
+    setNoteOpen(false);
+    setAsTemplate(false);
+  }, [open, intent]);
+
+  const source: AccountType = type === 'transfer' ? (direction === 'cash_to_bank' ? 'cash' : 'bank') : account;
+  const target: AccountType = source === 'cash' ? 'bank' : 'cash';
+  const sourceBalance = balances[source];
+  const amount = roundMoney(parseFloat(raw) || 0);
+  const after = type === 'income' ? sourceBalance + amount : sourceBalance - amount;
+  // An expense may take the account below zero (the balance then shows as negative);
+  // only a transfer is limited to what the source account really holds.
+  const over = type === 'transfer' && amount > sourceBalance + 0.001;
+  const canSubmit = amount > 0 && !over;
+
+  const shake = useCallback(() => {
+    haptic('warning');
+    setShakeKey((k) => k + 1);
+  }, []);
+
+  // ---------- amount input ----------
+  const pushDigit = useCallback((d: string) => {
+    setRaw((prev) => {
+      const [int, dec] = prev.split('.');
+      if (dec !== undefined && dec.length >= moneyPlaces()) return prev;
+      if (dec === undefined && int.replace(/^0+/, '').length >= MAX_INT_DIGITS) return prev;
+      const next = prev === '0' ? d : prev + d;
+      return next;
+    });
+  }, []);
+  const pushDecimal = useCallback(() => setRaw((p) => (p.includes('.') ? p : (p || '0') + '.')), []);
+  const backspace = useCallback(() => setRaw((p) => p.slice(0, -1)), []);
+  const clear = useCallback(() => setRaw(''), []);
+
+  // Shake as soon as the typed amount passes the available balance.
+  useEffect(() => {
+    if (over && raw) shake();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [over]);
+
+  // ---------- submit ----------
+  const submit = useCallback(() => {
+    if (!canSubmit) {
+      shake();
+      return;
+    }
+    const trimmed = note.trim();
+    let base = preset;
+    if (!base) {
+      if (type === 'income') base = DEFAULT_REASON.income;
+      else if (type === 'transfer') base = DEFAULT_REASON[direction];
+      else base = CATEGORIES.find((c) => c.id === (category ?? 'other'))!.stored;
+    }
+    const reason = trimmed ? (preset ? `${preset} — ${trimmed}` : trimmed) : base;
+
+    const tx = add({
+      amount,
+      type,
+      account: source,
+      toAccount: type === 'transfer' ? target : undefined,
+      reason,
+      category: type === 'expense' ? CATEGORIES.find((c) => c.id === (category ?? 'other'))!.stored : undefined,
+    });
+    haptic('money');
+
+    // "Save as quick button": the same entry, one tap away on Home next time.
+    if (asTemplate && type !== 'transfer' && templates.length < MAX_TEMPLATES) {
+      setTemplates([
+        ...templates,
+        {
+          id: newId(),
+          name: localize(reason).slice(0, 40),
+          amount,
+          type,
+          account: source,
+          category: type === 'expense' ? (category ?? 'other') : undefined,
+        },
+      ]);
+    }
+
+    const formatted = money(amount);
+    // The automation rules may have moved the entry to the other account: name the one it went to.
+    toast.show({
+      message:
+        type === 'income'
+          ? t('toast.income', { amount: formatted, account: accountName(tx.account) })
+          : type === 'expense'
+            ? t('toast.expense', { amount: formatted, account: accountName(tx.account) })
+            : t('toast.transfer', { amount: formatted, from: accountName(source), to: accountName(target) }),
+      tone: type === 'income' ? 'in' : type === 'expense' ? 'out' : 'neutral',
+      action: {
+        label: t('common.undo'),
+        onAction: () => {
+          remove(tx.id);
+          haptic('select');
+        },
+      },
+    });
+    onClose();
+    if (type === 'income') onIncome?.(tx);
+  }, [
+    canSubmit,
+    asTemplate,
+    templates,
+    setTemplates,
+    localize,
+    onIncome,
+    note,
+    preset,
+    type,
+    direction,
+    category,
+    add,
+    amount,
+    source,
+    target,
+    money,
+    toast,
+    t,
+    accountName,
+    remove,
+    onClose,
+    shake,
+  ]);
+
+  // Hardware keyboard: digits, decimal, backspace, enter.
+  useEffect(() => {
+    if (!open || suspended) return;
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (/^[0-9]$/.test(e.key)) {
+        e.preventDefault();
+        pushDigit(e.key);
+      } else if (e.key === '.' || e.key === ',') {
+        e.preventDefault();
+        pushDecimal();
+      } else if (e.key === 'Backspace') {
+        e.preventDefault();
+        backspace();
+      } else if (e.key === 'Enter' && !(el && el.tagName === 'BUTTON')) {
+        e.preventDefault();
+        submit();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, suspended, pushDigit, pushDecimal, backspace, submit]);
+
+  // ---------- display helpers ----------
+  const typed = useMemo(() => {
+    const [int, dec] = raw.split('.');
+    const grouped = (int || '0').replace(/^0+(?=\d)/, '').replace(/\B(?=(\d{3})+(?!\d))/g, lang === 'de' ? '.' : ',');
+    return dec !== undefined ? `${grouped}${lang === 'de' ? ',' : '.'}${dec}` : grouped;
+  }, [raw, lang]);
+
+  const quick = quickAmounts[source];
+  const percentChips = type !== 'income' && sourceBalance > 0 ? [0.25, 0.5, 1] : [];
+  const presets = type === 'income' ? incomeSources : type === 'expense' ? expenseSources : TRANSFER_REASONS[direction];
+  const tone = type === 'income' ? 'var(--in)' : type === 'expense' ? 'var(--out)' : 'var(--ink)';
+
+  const submitLabel =
+    type === 'income' ? t('composer.submit.income') : type === 'expense' ? t('composer.submit.expense') : t('composer.submit.transfer');
+
+  const footer = (
+    <div className="space-y-2.5">
+      <Keypad onDigit={pushDigit} onDecimal={pushDecimal} onBackspace={backspace} onClear={clear} />
+      <button
+        type="button"
+        onClick={submit}
+        aria-disabled={!canSubmit}
+        className={`press flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl text-[16px] font-semibold transition-[background-color,color,opacity] ${
+          canSubmit ? 'text-bg' : 'bg-surface-2 text-ink-3'
+        }`}
+        style={canSubmit ? { background: tone } : undefined}
+      >
+        <Check className="size-5" strokeWidth={2.5} aria-hidden />
+        <span>{submitLabel}</span>
+        {amount > 0 && (
+          <span dir="ltr" className="money tabular opacity-80">
+            {money(type === 'expense' ? -amount : amount, { sign: type === 'income' })}
+          </span>
+        )}
+      </button>
+    </div>
+  );
+
+  return (
+    <Sheet
+      open={open}
+      onClose={onClose}
+      title={t(`composer.title.${type}` as const)}
+      hideTitle
+      footer={footer}
+      bodyClassName="space-y-4"
+      headerExtra={
+        OCR_AVAILABLE && onScan && type === 'expense' ? (
+          <>
+            <button
+              type="button"
+              onClick={() => cameraRef.current?.click()}
+              className="press flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong px-3 text-[14px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"
+            >
+              <Camera className="size-[18px] text-foil" aria-hidden />
+              {t('scan.button')}
+            </button>
+            <input
+              ref={cameraRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                e.target.value = '';
+                if (file) onScan(file);
+              }}
+            />
+          </>
+        ) : undefined
+      }
+    >
+      <Segmented
+        label={t('composer.type')}
+        value={type}
+        onChange={(v) => {
+          setType(v);
+          setPreset('');
+        }}
+        size="lg"
+        options={[
+          { value: 'expense', label: t('common.expense'), icon: <ArrowUpRight className="size-4" aria-hidden />, tone: 'var(--out)' },
+          { value: 'income', label: t('common.income'), icon: <ArrowDownLeft className="size-4" aria-hidden />, tone: 'var(--in)' },
+          { value: 'transfer', label: t('common.transfer'), icon: <ArrowLeftRight className="size-4" aria-hidden /> },
+        ]}
+      />
+
+      {/* Account(s) */}
+      {type === 'transfer' ? (
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+          <AccountCard label={t('composer.from')} account={source} balance={balances[source]} active />
+          <motion.button
+            type="button"
+            onClick={() => {
+              haptic('select');
+              setSwapTurns((n) => n + 1);
+              setDirection((d) => (d === 'cash_to_bank' ? 'bank_to_cash' : 'cash_to_bank'));
+              setPreset('');
+            }}
+            animate={{ rotate: swapTurns * 180 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+            className="grid size-11 place-items-center rounded-full border border-line-strong bg-surface text-foil"
+            aria-label={t('composer.swap')}
+          >
+            <ArrowLeftRight className="size-[18px]" />
+          </motion.button>
+          <AccountCard label={t('composer.to')} account={target} balance={balances[target]} />
+        </div>
+      ) : (
+        <div role="radiogroup" aria-label={t('composer.account')} className="grid grid-cols-2 gap-2">
+          {(['cash', 'bank'] as const).map((a) => (
+            <AccountCard
+              key={a}
+              account={a}
+              balance={balances[a]}
+              active={account === a}
+              onSelect={() => {
+                haptic('select');
+                setAccount(a);
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Amount */}
+      <div className="text-center">
+        <div key={shakeKey} className={shakeKey ? 'shake' : ''}>
+          <div
+            dir="ltr"
+            className="font-display flex min-h-[64px] items-baseline justify-center gap-1 text-[56px] leading-none font-light tabular"
+            style={{ color: over ? 'var(--out)' : raw ? 'var(--ink)' : 'var(--ink-3)' }}
+            aria-live="polite"
+            aria-label={`${t('composer.amount')}: ${money(amount)}`}
+          >
+            {symbolFirst && <span className="text-[32px] text-foil">{currencySymbol}</span>}
+            <span className="relative inline-flex">
+              <AnimatePresence initial={false} mode="popLayout">
+                {typed.split('').map((ch, i) => (
+                  <motion.span
+                    key={`${i}-${ch}`}
+                    initial={{ y: 14, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -10, opacity: 0 }}
+                    transition={{ duration: 0.16, ease: 'easeOut' }}
+                    className="inline-block"
+                  >
+                    {ch}
+                  </motion.span>
+                ))}
+              </AnimatePresence>
+            </span>
+            {!symbolFirst && <span className="ms-1 text-[32px] text-foil">{currencySymbol}</span>}
+          </div>
+        </div>
+        <p
+          role={over ? 'alert' : undefined}
+          className={`mt-2 flex min-h-5 items-center justify-center gap-1.5 text-[13px] ${over ? 'font-medium text-out' : 'text-ink-3'}`}
+        >
+          {over ? (
+            <>
+              <AlertTriangle className="size-3.5 shrink-0" aria-hidden />
+              {t('composer.over', { account: accountName(source), amount: money(sourceBalance) })}
+            </>
+          ) : (
+            <span>
+              {t('composer.after', { account: accountName(source), amount: '' })}
+              <Money value={after} className={`font-medium ${after < -0.001 ? 'text-out' : 'text-ink-2'}`} />
+            </span>
+          )}
+        </p>
+      </div>
+
+      {/* Primary detail: category (expense) · source (income) · reason (transfer) */}
+      {type === 'expense' ? (
+        <fieldset>
+          <legend className="eyebrow mb-2">{t('composer.category')}</legend>
+          <div className="no-scrollbar rail-fade -mx-5 flex gap-2 overflow-x-auto px-5 pb-0.5">
+            {CATEGORIES.map((c) => {
+              const Icon = c.icon;
+              const active = category === c.id;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => {
+                    haptic('select');
+                    setCategory(active ? null : c.id);
+                  }}
+                  className={`chip press shrink-0 ${active ? '!border-transparent !text-ink' : ''}`}
+                  style={
+                    active
+                      ? { background: `color-mix(in oklab, ${c.hue} 24%, var(--surface))`, boxShadow: `inset 0 0 0 1.5px ${c.hue}` }
+                      : undefined
+                  }
+                >
+                  <Icon className="size-4 shrink-0" style={{ color: `color-mix(in oklab, ${c.hue} 80%, var(--ink))` }} aria-hidden />
+                  {t(c.labelKey)}
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
+      ) : (
+        <PresetRail
+          legend={type === 'income' ? t('composer.source') : t('composer.reason')}
+          presets={presets}
+          value={preset}
+          onChange={setPreset}
+          onEdit={type === 'income' ? () => onEditList('income') : undefined}
+        />
+      )}
+
+      {/* Quick amounts */}
+      <div className="no-scrollbar rail-fade -mx-5 flex gap-2 overflow-x-auto px-5">
+        {quick.map((q) => (
+          <button
+            key={`q-${q}`}
+            type="button"
+            className="chip press shrink-0"
+            aria-pressed={amount === q}
+            onClick={() => {
+              haptic('tap');
+              setRaw(String(q));
+            }}
+          >
+            <Plus className="size-3.5" aria-hidden />
+            <span dir="ltr" className="tabular">
+              {money(q)}
+            </span>
+          </button>
+        ))}
+        {percentChips.map((p) => {
+          const val = roundMoney(sourceBalance * p);
+          return (
+            <button
+              key={`p-${p}`}
+              type="button"
+              className="chip press shrink-0"
+              aria-pressed={amount > 0 && amount === val}
+              onClick={() => {
+                haptic('tap');
+                setRaw(String(val));
+              }}
+            >
+              {p === 1 ? t('composer.all') : <span dir="ltr">{p * 100}%</span>}
+            </button>
+          );
+        })}
+      </div>
+
+      {type === 'expense' && (
+        <PresetRail
+          legend={t('composer.detail')}
+          presets={presets}
+          value={preset}
+          onChange={setPreset}
+          onEdit={() => onEditList('expense')}
+        />
+      )}
+
+      {/* Note */}
+      <div>
+        {noteOpen ? (
+          <label className="block">
+            <span className="eyebrow mb-2 block">
+              {t('composer.note')} · {t('common.optional')}
+            </span>
+            <input
+              className="field"
+              value={note}
+              autoFocus
+              maxLength={120}
+              placeholder={t('composer.notePlaceholder')}
+              onChange={(e) => setNote(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  (e.target as HTMLInputElement).blur();
+                }
+              }}
+            />
+          </label>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setNoteOpen(true)}
+            className="press flex min-h-11 items-center gap-2 rounded-xl text-[14px] font-medium text-ink-2 hover:text-ink"
+          >
+            <PencilLine className="size-4" aria-hidden />
+            {t('composer.addNote')}
+          </button>
+        )}
+      </div>
+
+      {type !== 'transfer' && templates.length < MAX_TEMPLATES && (
+        <button
+          type="button"
+          aria-pressed={asTemplate}
+          onClick={() => {
+            haptic('select');
+            setAsTemplate((x) => !x);
+          }}
+          className="chip press"
+        >
+          <Zap className="size-3.5" aria-hidden />
+          {t('templates.saveFromComposer')}
+        </button>
+      )}
+    </Sheet>
+  );
+}
+
+function PresetRail({
+  legend,
+  presets,
+  value,
+  onChange,
+  onEdit,
+}: {
+  legend: string;
+  presets: string[];
+  value: string;
+  onChange: (v: string) => void;
+  onEdit?: () => void;
+}) {
+  const { t, localize } = useI18n();
+  return (
+    <fieldset>
+      <legend className="eyebrow mb-2">{legend}</legend>
+      <div className="no-scrollbar rail-fade -mx-5 flex gap-2 overflow-x-auto px-5 pb-0.5">
+        {presets.map((p) => (
+          <button
+            key={p}
+            type="button"
+            className="chip press shrink-0"
+            aria-pressed={value === p}
+            onClick={() => {
+              haptic('select');
+              onChange(value === p ? '' : p);
+            }}
+          >
+            {localize(p)}
+          </button>
+        ))}
+        {onEdit && (
+          <button type="button" className="chip press shrink-0 border-dashed text-ink-3" onClick={onEdit}>
+            <PencilLine className="size-3.5" aria-hidden />
+            {t('composer.editList')}
+          </button>
+        )}
+      </div>
+    </fieldset>
+  );
+}
+
+function AccountCard({
+  account,
+  balance,
+  active = false,
+  label,
+  onSelect,
+}: {
+  account: AccountType;
+  balance: number;
+  active?: boolean;
+  label?: string;
+  onSelect?: () => void;
+}) {
+  const { accountName } = useI18n();
+  const Icon = account === 'cash' ? Wallet : Landmark;
+  const hue = account === 'cash' ? 'var(--cash)' : 'var(--bank)';
+  const content = (
+    <>
+      <span
+        className="grid size-9 shrink-0 place-items-center rounded-xl"
+        style={{ background: `color-mix(in oklab, ${hue} 18%, transparent)`, color: hue }}
+        aria-hidden
+      >
+        <Icon className="size-[18px]" />
+      </span>
+      <span className="min-w-0 text-start">
+        {label && <span className="block text-[11px] leading-tight text-ink-3">{label}</span>}
+        <span className="block truncate text-[15px] leading-tight font-semibold">{accountName(account)}</span>
+        <Money value={balance} className="text-[12px] text-ink-3" />
+      </span>
+    </>
+  );
+  const cls = `flex min-h-[56px] w-full items-center gap-2.5 rounded-2xl border px-3 py-2 transition-colors ${
+    active ? 'border-transparent bg-surface text-ink' : 'border-line text-ink-2'
+  }`;
+  const style: React.CSSProperties | undefined = active ? { boxShadow: `inset 0 0 0 1.5px ${hue}` } : undefined;
+
+  if (!onSelect) {
+    return (
+      <div className={cls} style={style}>
+        {content}
+      </div>
+    );
+  }
+  return (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={active}
+      onClick={onSelect}
+      className={`press ${cls} hover:border-line-strong`}
+      style={style}
+    >
+      {content}
+    </button>
+  );
+}

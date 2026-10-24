@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "penniq",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "money-tracker", "run", "dev"],
+      "port": 3000
+    }
+  ]
+}
