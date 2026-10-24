@@ -44,7 +44,7 @@ On another host:
 
 ## Stack
 
-React 19 · TypeScript (strict) · Vite 6 · Tailwind CSS 4 · Motion · lucide-react. Fonts (Readex Pro, Fraunces, JetBrains Mono) are bundled through `@fontsource-variable/*`.
+React 19 · TypeScript (strict) · Vite 6 · Tailwind CSS 4 · Motion · lucide-react. Fonts (Playfair Display, Amiri, Manrope, IBM Plex Sans Arabic, DM Mono) are bundled through `@fontsource/*` and `@fontsource-variable/*`.
 
 ## Project map
 

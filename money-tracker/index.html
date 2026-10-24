@@ -28,7 +28,11 @@
             linen: 'parchment', mist: 'parchment', sage: 'olive', blush: 'parchment', night: 'navy'
           };
           // Page colour (--bg) of every appearance in src/index.css.
-          var BG = { parchment: '#EFEADF', navy: '#1A2030', olive: '#33341F' };
+          var BG = {
+            parchment: '#EFEADF', navy: '#1A2030', olive: '#33341F',
+            shore: '#E4E4E1', gilt: '#F4EFDF', azure: '#EAF2F9', clouds: '#FCF1E7', dusk: '#F1E8E1', velvet: '#F1EAEB',
+            tide: '#0E2931', koi: '#101A2C', shoal: '#161F33', deep: '#0E1F45', whale: '#182231', noir: '#0B0A12'
+          };
           var root = document.documentElement;
           var pref = localStorage.getItem('qirsh_app_theme') || 'auto';
           if (LEGACY[pref]) pref = LEGACY[pref];

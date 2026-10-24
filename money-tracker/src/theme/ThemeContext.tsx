@@ -2,7 +2,22 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import type { TranslationKey } from '../i18n/translations';
 import { KEYS, read, write } from '../lib/storage';
 
-export type EditionId = 'parchment' | 'navy' | 'olive';
+export type EditionId =
+  | 'parchment'
+  | 'navy'
+  | 'olive'
+  | 'shore'
+  | 'gilt'
+  | 'azure'
+  | 'clouds'
+  | 'dusk'
+  | 'velvet'
+  | 'tide'
+  | 'koi'
+  | 'shoal'
+  | 'deep'
+  | 'whale'
+  | 'noir';
 export type ThemePref = EditionId | 'auto';
 
 /** The colours themselves live in index.css, under [data-edition="<id>"]. */
@@ -12,11 +27,26 @@ export interface Edition {
   dark: boolean;
 }
 
-/** The three appearances of the Penniq brand: parchment (light), Ledger Navy and olive. */
+/**
+ * The three appearances of the Penniq brand (parchment, Ledger Navy, olive), then twelve built from
+ * reference palettes: one colour family, one accent, one neutral each. Light ones first, then dark.
+ */
 export const EDITIONS: Edition[] = [
   { id: 'parchment', labelKey: 'theme.parchment', dark: false },
   { id: 'navy', labelKey: 'theme.navy', dark: true },
   { id: 'olive', labelKey: 'theme.olive', dark: true },
+  { id: 'shore', labelKey: 'theme.shore', dark: false },
+  { id: 'gilt', labelKey: 'theme.gilt', dark: false },
+  { id: 'azure', labelKey: 'theme.azure', dark: false },
+  { id: 'clouds', labelKey: 'theme.clouds', dark: false },
+  { id: 'dusk', labelKey: 'theme.dusk', dark: false },
+  { id: 'velvet', labelKey: 'theme.velvet', dark: false },
+  { id: 'tide', labelKey: 'theme.tide', dark: true },
+  { id: 'koi', labelKey: 'theme.koi', dark: true },
+  { id: 'shoal', labelKey: 'theme.shoal', dark: true },
+  { id: 'deep', labelKey: 'theme.deep', dark: true },
+  { id: 'whale', labelKey: 'theme.whale', dark: true },
+  { id: 'noir', labelKey: 'theme.noir', dark: true },
 ];
 
 /** What "auto" resolves to. */
