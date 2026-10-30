@@ -204,7 +204,7 @@ export function SplitRulesSheet({ open, onClose }: { open: boolean; onClose: () 
 export function SplitSheet({ tx, onClose }: { tx: Transaction | null; onClose: () => void }) {
   const { t, money, accountName } = useI18n();
   const { allocation, goals, setGoals } = usePlanner();
-  const { add, remove, balances, essentials, transactions } = useWallet();
+  const { add, remove, balances, essentials, transactions, allTransactions } = useWallet();
   const toast = useToast();
   const last = useRef<Transaction | null>(null);
   if (tx) last.current = tx;
@@ -244,7 +244,7 @@ export function SplitSheet({ tx, onClose }: { tx: Transaction | null; onClose: (
       if (l.kind === 'goal') {
         const goal = goals.find((g) => g.id === l.goalId);
         if (!goal) return;
-        const before = goalProgress(goal, transactions);
+        const before = goalProgress(goal, allTransactions);
         const moved = add({ amount: value, type: 'transfer', account: source, toAccount: 'vault', reason: goal.name });
         const reached = !before.reached && before.saved + value >= goal.target;
         reachedAny ||= reached;

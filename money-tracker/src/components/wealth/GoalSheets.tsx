@@ -174,7 +174,7 @@ export function GoalSheet({ open, goal, onClose }: { open: boolean; goal: Goal |
 /** "Add to goal": moves money from cash or bank into the vault and counts it towards the goal. */
 export function GoalDepositSheet({ goal, onClose }: { goal: Goal | null; onClose: () => void }) {
   const { t, money, accountName } = useI18n();
-  const { balances, transactions, add, remove } = useWallet();
+  const { balances, allTransactions, add, remove } = useWallet();
   const { setGoals } = usePlanner();
   const toast = useToast();
   const [amount, setAmount] = useState('');
@@ -183,7 +183,7 @@ export function GoalDepositSheet({ goal, onClose }: { goal: Goal | null; onClose
   const last = useRef<Goal | null>(null);
   if (goal) last.current = goal;
   const shown = last.current;
-  const progress = useMemo(() => (shown ? goalProgress(shown, transactions) : null), [shown, transactions]);
+  const progress = useMemo(() => (shown ? goalProgress(shown, allTransactions) : null), [shown, allTransactions]);
 
   useEffect(() => {
     if (!goal) return;

@@ -1,4 +1,5 @@
 import { arFeatures, deFeatures, enFeatures } from './features';
+import { arWorkspaces, deWorkspaces, enWorkspaces } from './workspaces';
 import type { Language } from './types';
 
 const ar = {
@@ -531,6 +532,7 @@ const ar = {
   'debt.reduceSubmit': 'نقّص من الدين',
   'debt.toast.reduced': 'نقص دين {person} بمقدار {amount}',
   ...arFeatures,
+  ...arWorkspaces,
 };
 
 export type TranslationKey = keyof typeof ar;
@@ -1084,6 +1086,7 @@ const de: Dictionary = {
   'debt.reduceSubmit': 'Betrag verringern',
   'debt.toast.reduced': 'Schuld bei {person} um {amount} verringert',
   ...deFeatures,
+  ...deWorkspaces,
 };
 
 const en: Dictionary = {
@@ -1628,6 +1631,7 @@ const en: Dictionary = {
   'debt.reduceSubmit': 'Lower the amount',
   'debt.toast.reduced': 'Lowered {person}’s debt by {amount}',
   ...enFeatures,
+  ...enWorkspaces,
 };
 
 export const translations: Record<Language, Dictionary> = { ar, de, en };

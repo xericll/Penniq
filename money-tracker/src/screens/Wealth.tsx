@@ -261,10 +261,10 @@ function Goals() {
 
 export function GoalCard({ goal }: { goal: Goal }) {
   const { t, money, dateLabel } = useI18n();
-  const { transactions } = useWallet();
+  const { allTransactions } = useWallet();
   const tools = useTools();
   const reduced = useReducedMotion();
-  const p = useMemo(() => goalProgress(goal, transactions), [goal, transactions]);
+  const p = useMemo(() => goalProgress(goal, allTransactions), [goal, allTransactions]);
 
   return (
     <article className="card overflow-hidden p-4">

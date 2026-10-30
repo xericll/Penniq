@@ -32,6 +32,8 @@ export interface Transaction {
   person?: string;
   /** Repayments and increases: id of the 'loan' or 'borrow' transaction that opened the debt. */
   debtId?: string;
+  /** Id of the workspace the entry belongs to; absent for the first workspace (and every entry from before workspaces). */
+  workspace?: string;
 }
 
 export type PeriodFilter = 'all' | 'today' | '7days' | 'month';
@@ -54,4 +56,6 @@ export interface Essential {
   account: AccountType;
   /** Expenses only — stored as its canonical Arabic label, like Transaction.category. */
   category?: string;
+  /** Workspace the item belongs to; absent for the first one. */
+  workspace?: string;
 }

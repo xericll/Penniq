@@ -33,11 +33,11 @@ export function AchievementSheet({
   onClose: () => void;
 }) {
   const { t, money, lang, dir, monthLabel, info } = useI18n();
-  const { transactions, budget } = useWallet();
+  const { transactions, allTransactions, budget } = useWallet();
   const { goals } = usePlanner();
   const toast = useToast();
   const rate = useMemo(() => savingsRate(transactions), [transactions]);
-  const reachedGoals = useMemo(() => goals.filter((g) => goalProgress(g, transactions).reached), [goals, transactions]);
+  const reachedGoals = useMemo(() => goals.filter((g) => goalProgress(g, allTransactions).reached), [goals, allTransactions]);
   const progress = useMemo(
     () => progressOf(transactions, budget, reachedGoals.length, info.weekStartsOn),
     [transactions, budget, reachedGoals.length, info.weekStartsOn],

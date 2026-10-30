@@ -82,10 +82,10 @@ export function SavingsRateCard() {
 }
 
 function useProgress() {
-  const { transactions, budget } = useWallet();
+  const { transactions, allTransactions, budget } = useWallet();
   const { goals } = usePlanner();
   const { info } = useI18n();
-  const reached = useMemo(() => goals.filter((g) => goalProgress(g, transactions).reached).length, [goals, transactions]);
+  const reached = useMemo(() => goals.filter((g) => goalProgress(g, allTransactions).reached).length, [goals, allTransactions]);
   return useMemo(() => progressOf(transactions, budget, reached, info.weekStartsOn), [transactions, budget, reached, info.weekStartsOn]);
 }
 

@@ -5,6 +5,7 @@ import { BalanceNote } from '../components/home/BalanceNote';
 import { Pockets } from '../components/home/Pockets';
 import { EssentialsCard, Reserves } from '../components/home/Reserves';
 import { TemplateRail } from '../components/planner/QuickRecord';
+import { WorkspaceChip } from '../components/sheets/WorkspaceSheets';
 import { TxRow } from '../components/tx/TxRow';
 import { AssistantButton } from '../components/ui/AssistantButton';
 import { Guilloche } from '../components/ui/Engraving';
@@ -74,6 +75,7 @@ export function Home({
         >
           {dateLabel(new Date())}
         </motion.p>
+        <WorkspaceChip className="mt-3" />
       </header>
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-start lg:gap-6">
@@ -352,14 +354,14 @@ function MoneyLeak({ onOpen }: { onOpen: () => void }) {
 /** Assets and savings goals at a glance; opens the Wealth screen. */
 function WealthCard({ onOpen }: { onOpen: () => void }) {
   const { t } = useI18n();
-  const { transactions } = useWallet();
+  const { allTransactions } = useWallet();
   const { assets, goals, prefs } = usePlanner();
   const net = useNetWorth();
   const goalShare = useMemo(() => {
     if (!goals.length) return null;
-    const ps = goals.map((g) => goalProgress(g, transactions));
+    const ps = goals.map((g) => goalProgress(g, allTransactions));
     return Math.round((ps.reduce((s, p) => s + p.share, 0) / ps.length) * 100);
-  }, [goals, transactions]);
+  }, [goals, allTransactions]);
 
   return (
     <button

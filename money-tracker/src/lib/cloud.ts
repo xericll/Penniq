@@ -3,6 +3,7 @@ import type { Essential, QuickAmounts, Transaction } from '../types';
 import { isCurrency } from './currency';
 import { roundMoney } from './ledger';
 import { KEYS, parseEssentials, readJSON, write } from './storage';
+import { MAIN_WORKSPACE, parseWorkspaces, type Workspace } from './workspaces';
 
 /* ---------- Outbox ---------------------------------------------------------
    Changes made on this device that the account has not received yet. Each entry
@@ -65,9 +66,11 @@ interface TxRow {
   kind: NonNullable<Transaction['kind']> | null;
   person: string | null;
   debt_id: string | null;
+  /** null for the first workspace. */
+  workspace_id: string | null;
 }
 
-const TX_COLUMNS = 'id, amount, type, account, to_account, reason, category, occurred_at, kind, person, debt_id';
+const TX_COLUMNS = 'id, amount, type, account, to_account, reason, category, occurred_at, kind, person, debt_id, workspace_id';
 const LEDGERS: readonly unknown[] = ['cash', 'bank', 'vault', 'loans', 'owed'];
 const KINDS: readonly unknown[] = ['adjustment', 'loan', 'borrow', 'repayment'];
 
@@ -85,6 +88,7 @@ function toRow(tx: Transaction): TxRow {
     kind: tx.kind && KINDS.includes(tx.kind) ? tx.kind : null,
     person: tx.person ? tx.person.slice(0, 120) : null,
     debt_id: tx.debtId ? tx.debtId.slice(0, 80) : null,
+    workspace_id: tx.workspace && tx.workspace !== MAIN_WORKSPACE ? tx.workspace.slice(0, 80) : null,
   };
 }
 
@@ -102,6 +106,7 @@ function fromRow(row: TxRow): Transaction {
   if (row.kind) tx.kind = row.kind;
   if (row.person) tx.person = row.person;
   if (row.debt_id) tx.debtId = row.debt_id;
+  if (row.workspace_id) tx.workspace = row.workspace_id;
   return tx;
 }
 
@@ -215,6 +220,8 @@ export interface CloudSettings {
   essentials: Essential[] | null;
   /** ISO code; null on accounts created before currencies could be chosen (they are in euros). */
   currency: string | null;
+  /** The workspaces of the account; null on accounts from before workspaces (they have only the first one). */
+  workspaces: Workspace[] | null;
 }
 
 function stringList(v: unknown): string[] | null {
@@ -234,7 +241,7 @@ function quickAmounts(v: unknown): QuickAmounts | null {
 export async function pullSettings(sb: SupabaseClient): Promise<CloudSettings | null> {
   const { data, error } = await sb
     .from('user_settings')
-    .select('income_sources, expense_sources, budget, quick_amounts, essentials, currency')
+    .select('income_sources, expense_sources, budget, quick_amounts, essentials, currency, workspaces')
     .maybeSingle();
   if (error) throw error;
   if (!data) return null;
@@ -246,6 +253,7 @@ export async function pullSettings(sb: SupabaseClient): Promise<CloudSettings | 
     quickAmounts: quickAmounts(data.quick_amounts),
     essentials: parseEssentials(data.essentials),
     currency: isCurrency(data.currency) ? data.currency : null,
+    workspaces: parseWorkspaces(data.workspaces),
   };
 }
 
@@ -258,6 +266,7 @@ export async function pushSettings(sb: SupabaseClient, userId: string, s: CloudS
     quick_amounts: s.quickAmounts,
     essentials: s.essentials,
     currency: s.currency,
+    workspaces: s.workspaces,
   });
   if (error) throw error;
 }

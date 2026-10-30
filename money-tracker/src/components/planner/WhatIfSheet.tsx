@@ -20,7 +20,7 @@ const HORIZONS = [3, 6, 12];
  */
 export function WhatIfSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t, money } = useI18n();
-  const { transactions, balances } = useWallet();
+  const { transactions, allTransactions, balances } = useWallet();
   const { goals } = usePlanner();
   const avg = useMemo(() => monthlyAverages(transactions), [transactions]);
   const spendCats = useMemo(() => CATEGORIES.filter((c) => (avg.byCategory.get(c.id) ?? 0) > 0), [avg]);
@@ -34,7 +34,7 @@ export function WhatIfSheet({ open, onClose }: { open: boolean; onClose: () => v
     setExtra('0');
     setCut(20);
     setCategory(spendCats.sort((a, b) => (avg.byCategory.get(b.id) ?? 0) - (avg.byCategory.get(a.id) ?? 0))[0]?.id ?? '');
-    setGoalId(goals.find((g) => !goalProgress(g, transactions).reached)?.id ?? '');
+    setGoalId(goals.find((g) => !goalProgress(g, allTransactions).reached)?.id ?? '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -47,7 +47,7 @@ export function WhatIfSheet({ open, onClose }: { open: boolean; onClose: () => v
   const slider = Math.max(100, Math.round((avg.income || avg.expense || 1000) / 2 / 10) * 10);
 
   const goal = goals.find((g) => g.id === goalId);
-  const gp = goal ? goalProgress(goal, transactions) : null;
+  const gp = goal ? goalProgress(goal, allTransactions) : null;
   const monthsTo = (net: number) => (gp && net > 0 ? Math.ceil(gp.remaining / net) : null);
 
   // Chart: twelve months, both paths.

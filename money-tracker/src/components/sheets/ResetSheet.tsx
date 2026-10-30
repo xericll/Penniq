@@ -8,7 +8,7 @@ import { Sheet } from '../ui/Sheet';
 
 export function ResetSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useI18n();
-  const { reset, replaceAll, countFor } = useWallet();
+  const { reset, restore, countFor } = useWallet();
   const toast = useToast();
   const [target, setTarget] = useState<ResetTarget>('all');
 
@@ -19,7 +19,7 @@ export function ResetSheet({ open, onClose }: { open: boolean; onClose: () => vo
   const count = countFor(target);
 
   const confirm = () => {
-    const snapshot = reset(target);
+    const removed = reset(target);
     haptic('warning');
     onClose();
     toast.show({
@@ -29,7 +29,7 @@ export function ResetSheet({ open, onClose }: { open: boolean; onClose: () => vo
       action: {
         label: t('common.undo'),
         onAction: () => {
-          replaceAll(snapshot);
+          restore(removed);
           haptic('success');
         },
       },

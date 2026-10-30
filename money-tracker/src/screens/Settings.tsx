@@ -23,6 +23,7 @@ import {
   ListPlus,
   LogIn,
   LogOut,
+  Plus,
   RefreshCw,
   RotateCcw,
   Sparkles,
@@ -35,6 +36,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { useAppLock } from '../components/lock/AppLock';
 import { useShareApp } from '../components/planner/ShareRate';
 import { DeleteAccountSheet, SignOutSheet } from '../components/sheets/CloudSheets';
+import { WorkspaceMark, WorkspaceSheet, useWorkspaceName } from '../components/sheets/WorkspaceSheets';
 import { useReminderSummary } from '../components/sheets/RemindersSheet';
 import { supportAvailable } from '../components/sheets/SupportSheet';
 import { Logo } from '../components/ui/Logo';
@@ -48,6 +50,7 @@ import { APP_VERSION } from '../lib/boot';
 import { currencyName } from '../lib/currency';
 import { haptic } from '../lib/haptics';
 import { SOCIAL_LINKS } from '../lib/links';
+import { MAX_WORKSPACES, type Workspace } from '../lib/workspaces';
 import { useAuth } from '../state/AuthContext';
 import { usePlanner } from '../state/PlannerContext';
 import { usePrivacy } from '../state/PrivacyContext';
@@ -84,7 +87,13 @@ export function Settings({ onEditList, onCorrect, onReset, onCurrency, onReminde
     <div className="space-y-6">
       <ScreenHeader title={t('settings.title')} />
 
-      {auth.enabled && <AccountGroup />}
+      {auth.enabled ? (
+        <AccountGroup />
+      ) : (
+        <Group title={t('ws.title')}>
+          <WorkspaceRows />
+        </Group>
+      )}
 
       <Group title={t('settings.appearance')} hint={t('settings.appearanceHint')}>
         <div className="space-y-3.5 p-3">
@@ -324,6 +333,7 @@ function AccountGroup() {
           onClick={askToSignIn}
           chevron
         />
+        <WorkspaceRows />
       </Group>
     );
   }
@@ -345,6 +355,7 @@ function AccountGroup() {
         trailing={state.icon}
         onClick={() => void cloud.sync()}
       />
+      <WorkspaceRows />
       {user && (
         <>
           <Row
@@ -366,6 +377,41 @@ function AccountGroup() {
       <SignOutSheet open={leaving} onClose={() => setLeaving(false)} />
       <DeleteAccountSheet open={deleting} onClose={() => setDeleting(false)} />
     </Group>
+  );
+}
+
+/** The workspaces of the account (once there are several), each opening its editor, then the way to a new one. */
+function WorkspaceRows() {
+  const { t } = useI18n();
+  const { workspaces, workspace, workspaceCount } = useWallet();
+  const nameOf = useWorkspaceName();
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Workspace | null>(null);
+
+  const edit = (ws: Workspace | null) => {
+    setEditing(ws);
+    setOpen(true);
+  };
+
+  return (
+    <>
+      {workspaces.length > 1 &&
+        workspaces.map((ws) => (
+          <Row
+            key={ws.id}
+            icon={<WorkspaceMark icon={ws.icon} tone={ws.tone} />}
+            label={nameOf(ws)}
+            hint={ws.id === workspace.id ? t('ws.active') : t('ws.entries', { count: workspaceCount(ws.id) })}
+            trailing={ws.id === workspace.id ? <Check className="size-[18px] text-foil" aria-hidden /> : undefined}
+            onClick={() => edit(ws)}
+            chevron
+          />
+        ))}
+      {workspaces.length < MAX_WORKSPACES && (
+        <Row icon={<Plus className="size-[18px]" />} label={t('ws.add')} hint={t('ws.addHint')} onClick={() => edit(null)} chevron />
+      )}
+      <WorkspaceSheet open={open} workspace={editing} onClose={() => setOpen(false)} />
+    </>
   );
 }
 

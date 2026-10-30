@@ -37,6 +37,9 @@ export const KEYS = {
   prefs: 'penniq_prefs',
   lock: 'penniq_lock',
   rating: 'penniq_rating',
+  // Workspaces: the list syncs with the account, the open one belongs to the device.
+  workspaces: 'penniq_workspaces',
+  workspace: 'penniq_workspace',
 } as const;
 
 export function read(key: string): string | null {
@@ -163,6 +166,7 @@ export function parseEssentials(v: unknown): Essential[] | null {
       account: e.account === 'bank' ? 'bank' : 'cash',
     };
     if (item.type === 'expense' && typeof e.category === 'string' && e.category) item.category = e.category;
+    if (typeof e.workspace === 'string' && e.workspace) item.workspace = e.workspace.slice(0, 80);
     out.push(item);
   }
   return out;
