@@ -1,4 +1,4 @@
-import { Sparkles } from 'lucide-react';
+import { Sparkle } from 'lucide-react';
 import { useI18n } from '../../i18n/LanguageContext';
 import { haptic } from '../../lib/haptics';
 
@@ -14,9 +14,10 @@ export function AssistantButton({ onClick }: { onClick: () => void }) {
       }}
       aria-label={t('assistant.open')}
       title={t('assistant.open')}
-      className="press grid size-11 shrink-0 place-items-center rounded-full border border-line-strong text-foil hover:bg-surface-2"
+      className="press grid size-[38px] shrink-0 place-items-center rounded-full text-ink hover:brightness-95"
+      style={{ background: 'var(--assist-bg)' }}
     >
-      <Sparkles className="size-5" aria-hidden />
+      <Sparkle className="size-[17px]" strokeWidth={1.8} aria-hidden />
     </button>
   );
 }

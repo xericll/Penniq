@@ -27,7 +27,7 @@ export function Pockets({ onOpenAccount, onTransfer }: PocketsProps) {
         }}
         whileTap={{ scale: 0.9, rotate: 180 }}
         className="coin coin-flip absolute top-1/2 left-1/2 z-10 -mt-6 -ml-6 grid size-12 place-items-center rounded-full"
-        style={{ boxShadow: '0 0 0 5px var(--bg), 0 10px 24px -10px rgba(0,0,0,.6)' }}
+        style={{ boxShadow: '0 0 0 5px var(--coin-ring), 0 6px 14px -4px rgba(150,70,35,.35)' }}
         aria-label={t('home.transferBetween')}
         title={t('home.transferBetween')}
       >
@@ -38,7 +38,7 @@ export function Pockets({ onOpenAccount, onTransfer }: PocketsProps) {
 }
 
 /** Balance size for 5, 6, 7, 8 and 9 characters (digits plus minus sign); anything longer uses 13px. */
-const LONG_SIZES = ['text-[23px]', 'text-[21px]', 'text-[19px]', 'text-[17px]', 'text-[15px]'];
+const LONG_SIZES = ['text-[27px]', 'text-[24px]', 'text-[21px]', 'text-[18px]', 'text-[16px]'];
 
 function Pocket({ account, onOpen }: { account: AccountType; onOpen: (a: AccountType) => void }) {
   const { t, accountName, currencySymbol } = useI18n();
@@ -52,7 +52,7 @@ function Pocket({ account, onOpen }: { account: AccountType; onOpen: (a: Account
   const Icon = account === 'cash' ? Wallet : Landmark;
   // Long figures (five digits and up, a minus sign, a wide currency symbol) step down in size so they never run under the card's edge.
   const width = String(Math.trunc(Math.abs(balance))).length + (balance < 0 ? 1 : 0) + Math.max(0, currencySymbol.length - 1);
-  const size = width <= 4 ? 'text-[26px] min-[380px]:text-[28px]' : (LONG_SIZES[width - 5] ?? 'text-[13px]');
+  const size = width <= 4 ? 'text-[30px] min-[380px]:text-[32px]' : (LONG_SIZES[width - 5] ?? 'text-[13px]');
 
   return (
     <button
@@ -62,7 +62,7 @@ function Pocket({ account, onOpen }: { account: AccountType; onOpen: (a: Account
         onOpen(account);
       }}
       aria-label={t('home.openAccount', { account: accountName(account) })}
-      className={`card press group relative flex min-h-[150px] flex-col overflow-hidden p-4 text-start hover:border-line-strong ${
+      className={`card press group relative flex flex-col overflow-hidden px-3.5 pt-1.5 pb-2 text-start hover:border-line-strong ${
         account === 'cash' ? 'pe-7' : 'ps-7'
       }`}
     >
@@ -79,25 +79,28 @@ function Pocket({ account, onOpen }: { account: AccountType; onOpen: (a: Account
       )}
       <span className="flex items-center gap-2">
         <span
-          className="grid size-9 place-items-center rounded-xl"
-          style={{ background: `color-mix(in oklab, ${hue} 16%, transparent)`, color: hue }}
+          className="grid size-7 place-items-center rounded-[9px]"
+          style={{
+            background: account === 'cash' ? 'var(--icon-tile)' : 'color-mix(in oklab, var(--icon-tile) 45%, var(--surface-2))',
+            color: account === 'cash' ? hue : 'var(--ink)',
+          }}
           aria-hidden
         >
-          <Icon className="size-[18px]" />
+          <Icon className="size-[17px]" />
         </span>
-        <span className="text-[15px] font-semibold">{accountName(account)}</span>
+        <span className="text-[17px] font-semibold">{accountName(account)}</span>
         <ChevronLeft
-          className="ms-auto size-4 text-ink-3 transition-transform group-hover:-translate-x-0.5 ltr:rotate-180 ltr:group-hover:translate-x-0.5"
+          className="ms-auto size-4 text-ink transition-transform group-hover:-translate-x-0.5 ltr:rotate-180 ltr:group-hover:translate-x-0.5"
           aria-hidden
         />
       </span>
 
-      <span className="relative mt-auto pt-5">
+      <span className="relative mt-1">
         <Odometer
           value={balance}
           className={`font-display block leading-none font-normal ${size}`}
-          decimalsClassName="text-[0.55em] text-ink-3"
-          currencyClassName="text-[0.6em] text-ink-3 mx-0.5"
+          decimalsClassName="text-[0.6em] text-ink"
+          currencyClassName="text-[0.6em] text-ink ms-1"
         />
         <PulseChips
           pulses={mine}
@@ -106,11 +109,11 @@ function Pocket({ account, onOpen }: { account: AccountType; onOpen: (a: Account
         />
       </span>
 
-      <span className="mt-3 flex items-center gap-2">
-        <span className="h-1 flex-1 overflow-hidden rounded-full bg-surface-2" aria-hidden>
+      <span className="mt-1.5 flex items-center gap-2.5">
+        <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2" aria-hidden>
           <span className="block h-full rounded-full transition-[width] duration-700" style={{ width: `${share}%`, background: hue }} />
         </span>
-        <span className="text-[12px] text-ink-3 tabular">{t('home.ofTotal', { pct: share })}</span>
+        <span className="text-[12px] text-ink-2 tabular">{t('home.ofTotal', { pct: share })}</span>
       </span>
     </button>
   );

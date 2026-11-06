@@ -72,7 +72,7 @@ export function BalanceNote({ monthNet }: { monthNet: number }) {
     el.style.setProperty('--glare', '0');
   };
 
-  const split = 'color-mix(in oklab, var(--note-ink) 90%, var(--note-bg))';
+  const split = 'var(--note-bank)';
 
   return (
     <motion.div
@@ -88,8 +88,8 @@ export function BalanceNote({ monthNet }: { monthNet: number }) {
         className="relative isolate overflow-hidden rounded-[26px] text-note-ink"
         style={{
           background:
-            'radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, var(--note-bg) 82%, white) 0%, transparent 62%), radial-gradient(90% 80% at 0% 100%, color-mix(in oklab, var(--note-foil) 16%, transparent) 0%, transparent 70%), linear-gradient(160deg, var(--note-bg), var(--note-bg-2))',
-          boxShadow: '0 28px 50px -30px rgba(20,20,5,0.7), inset 0 1px 0 rgba(255,255,255,0.07)',
+            'radial-gradient(110% 95% at 100% 0%, var(--note-hi) 0%, transparent 60%), linear-gradient(170deg, var(--note-bg) 45%, var(--note-bg-2))',
+          boxShadow: 'var(--note-shadow), inset 0 1px 0 rgba(255,255,255,0.1)',
           transform: 'perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))',
           transition: 'transform 500ms cubic-bezier(0.16, 1, 0.3, 1)',
         }}
@@ -130,45 +130,45 @@ export function BalanceNote({ monthNet }: { monthNet: number }) {
         <span className="note-sheen" aria-hidden />
         <span className="note-glare" aria-hidden />
 
-        <div className="relative px-6 pt-5 pb-5">
-          <div className="flex items-center gap-2.5">
-            <h2 id="note-title" className="text-[16px] font-medium text-note-ink">
+        <div className="relative px-4 pt-2.5 pb-1.5">
+          <div className="flex items-center gap-2">
+            <h2 id="note-title" className="text-[15px] text-note-ink">
               {t('home.total')}
             </h2>
-            <span className="size-1.5 shrink-0 rounded-full bg-note-ink" aria-hidden />
-            <span className="font-display text-[15px] text-note-ink-2 tabular" dir="ltr">
+            <span className="size-[5px] shrink-0 rounded-full bg-note-ink" aria-hidden />
+            <span className="font-display text-[12px] text-note-ink-2 tabular" dir="ltr">
               {year} - {serial}
             </span>
             <PrivacyButton
-              className="ms-auto -me-1 !size-10 text-note-ink"
-              style={{ background: 'color-mix(in oklab, var(--note-ink) 24%, transparent)' }}
+              className="ms-auto -me-0.5 !size-[27px] text-note-ink [&>svg]:!size-[17px]"
+              style={{ background: 'color-mix(in oklab, var(--note-ink) 40%, transparent)' }}
             />
           </div>
 
-          <div className="relative mt-2">
+          <div className="relative mt-0.5 pe-2">
             <Odometer
               value={balances.total}
-              className={`font-display leading-[1.1] font-normal ${size}`}
-              decimalsClassName="text-[0.55em] text-note-ink ms-0.5"
-              currencyClassName="text-[0.55em] text-note-ink mx-1.5"
+              className={`font-display leading-[1.05] font-normal ${size}`}
+              decimalsClassName="text-[0.6em] text-note-ink ms-0.5"
+              currencyClassName="text-[0.6em] text-note-ink mx-1.5"
             />
             <PulseChips pulses={totalPulses} className="-top-3 end-0" />
           </div>
 
-          <div className="mt-3 flex items-center gap-3 text-[14px]">
+          <div className="mt-1 flex items-center gap-2.5 text-[13px]">
             <span
-              className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5"
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5"
               style={{ background: 'var(--note-chip)', color: 'var(--note-chip-ink)' }}
             >
-              {monthNet >= 0 ? <TrendingUp className="size-4" aria-hidden /> : <TrendingDown className="size-4" aria-hidden />}
-              <Money value={monthNet} sign className="font-display text-[15px]" />
+              {monthNet >= 0 ? <TrendingUp className="size-3.5" aria-hidden /> : <TrendingDown className="size-3.5" aria-hidden />}
+              <Money value={monthNet} sign className="font-display text-[14px]" />
             </span>
             <span className="text-note-ink">{t('home.monthNet')}</span>
           </div>
 
           {/* Cash / bank split */}
-          <div className="mt-6">
-            <div className="flex h-2 gap-0.5 overflow-hidden rounded-full" style={{ background: split }} aria-hidden>
+          <div className="mt-4 px-1">
+            <div className="flex h-1.5 gap-0.5 overflow-hidden rounded-full" style={{ background: split }} aria-hidden>
               <motion.span
                 className="h-full rounded-full"
                 style={{ background: 'var(--note-foil)' }}
@@ -177,16 +177,16 @@ export function BalanceNote({ monthNet }: { monthNet: number }) {
                 transition={{ type: 'spring', stiffness: 60, damping: 18, delay: reduced ? 0 : 0.9 }}
               />
             </div>
-            <div className="mt-3 flex items-center justify-between text-[14px]">
+            <div className="mt-2 flex items-center justify-between text-[13px]">
               <span className="flex items-center gap-2">
-                <span className="size-2 rounded-full" style={{ background: 'var(--note-foil)' }} aria-hidden />
+                <span className="size-[7px] rounded-full" style={{ background: 'var(--note-foil)' }} aria-hidden />
                 <span className="text-note-ink">{t('common.cash')}</span>
-                <Money value={balances.cash} className="font-display text-[16px]" />
+                <Money value={balances.cash} className="font-display text-[15px]" />
               </span>
               <span className="flex items-center gap-2">
-                <span className="size-2 rounded-full" style={{ background: split }} aria-hidden />
+                <span className="size-[7px] rounded-full" style={{ background: split }} aria-hidden />
                 <span className="text-note-ink">{t('common.bank')}</span>
-                <Money value={balances.bank} className="font-display text-[16px]" />
+                <Money value={balances.bank} className="font-display text-[15px]" />
               </span>
             </div>
           </div>

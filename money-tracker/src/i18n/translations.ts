@@ -41,7 +41,7 @@ const ar = {
 
   'home.total': 'إجمالي الرصيد',
   'home.monthNet': 'صافي هذا الشهر',
-  'home.ofTotal': '{pct}٪',
+  'home.ofTotal': '{pct}%',
   'home.budget': 'الميزانية',
   'home.transferBetween': 'تحويل بين الكاش والبنك',
   'home.openAccount': 'تفاصيل {account}',

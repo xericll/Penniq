@@ -63,11 +63,11 @@ export function Home({
           <Logo variant="mark" size={24} className="lg:invisible" />
           <AssistantButton onClick={onAssistant} />
         </div>
-        <h1 className="font-display mt-2 text-[34px] leading-[1.25] lg:text-[40px]">
+        <h1 className="mt-1.5 text-[32px] leading-[1.25] font-bold lg:text-[40px]">
           <RevealWords text={greeting} />
         </h1>
         <motion.p
-          className="text-[14px] text-ink-3"
+          className="font-display mt-1.5 mb-2 text-[16px] text-ink-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
@@ -78,9 +78,9 @@ export function Home({
       </header>
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-start lg:gap-6">
-        <div className="relative space-y-4">
+        <div className="relative space-y-3">
           {/* An olive branch reaches in from the edge and rests on the note (in front of it). */}
-          <OliveBranch kind="hero" className="absolute -end-5 -top-[92px] z-20 w-[175px] sm:-end-7 lg:hidden ltr:scale-x-[-1]" />
+          <OliveBranch kind="hero" className="absolute -end-5 -top-[78px] z-20 w-[185px] sm:-end-7 lg:hidden ltr:scale-x-[-1]" />
           {/* A sprig tucked behind the cards lower down. */}
           <OliveBranch kind="corner" className="absolute -start-4 bottom-[6%] -z-10 w-[150px] sm:-start-6 ltr:scale-x-[-1]" />
           <Reveal i={0}>
@@ -101,21 +101,21 @@ export function Home({
             <div className="grid grid-cols-3 gap-2.5">
               <ActionButton
                 label={t('common.expense')}
-                icon={<ArrowUpRight className="size-6" strokeWidth={1.6} />}
+                icon={<ArrowUpRight className="size-[23px] text-coin" strokeWidth={1.5} />}
                 onClick={() => onCompose('expense')}
               />
               <ActionButton
                 label={t('common.income')}
-                icon={<ArrowDownLeft className="size-6" strokeWidth={1.6} />}
+                icon={<ArrowDownLeft className="size-[23px]" strokeWidth={1.5} />}
                 onClick={() => onCompose('income')}
               />
               <ActionButton
                 label={t('common.transfer')}
-                icon={<ArrowLeftRight className="size-6" strokeWidth={1.6} />}
+                icon={<ArrowLeftRight className="size-[23px]" strokeWidth={1.5} />}
                 onClick={() => onCompose('transfer')}
               />
             </div>
-            <div className="mt-2.5">
+            <div className="mt-4">
               <TemplateRail />
             </div>
           </Reveal>
@@ -260,36 +260,42 @@ function MoneyLeak({ onOpen }: { onOpen: () => void }) {
   if (transactions.length === 0) return null;
   const max = Math.max(...days.map((d) => d.amount));
   const peak = max > 0 ? days.findIndex((d) => d.amount === max) : -1;
-  // Bars start from a base height, so a quiet day still reads as a column and the busiest stands out.
-  const height = (share: number) => `${(0.4 + share * 0.6) * 100}%`;
+  // Bars start from a base height, so a quiet day still reads as a column and the busiest stands out;
+  // the tallest leaves room above it for its amount.
+  const height = (share: number) => `${(0.4 + share * 0.6) * 72}%`;
 
   return (
     <Reveal i={3}>
-      <button type="button" onClick={onOpen} className="card press block w-full p-5 text-start hover:border-line-strong">
+      <button type="button" onClick={onOpen} className="card press block w-full px-5 pt-3 pb-2.5 text-start hover:border-line-strong">
         <span className="flex items-center gap-2.5">
-          <span className="size-2 shrink-0 rounded-full bg-coin" aria-hidden />
-          <span className="font-display min-w-0 flex-1 truncate text-[20px] leading-tight">{t('home.leak.title')}</span>
+          <span className="size-[7px] shrink-0 rounded-full bg-coin" aria-hidden />
+          <span className="min-w-0 flex-1 truncate text-[19px] leading-tight font-bold">{t('home.leak.title')}</span>
         </span>
 
         {/* Time runs left to right in every language, like the design. */}
-        <span className="mt-4 grid grid-cols-7 items-end gap-2.5" dir="ltr">
+        <span className="mt-1 grid grid-cols-7 items-end gap-3 px-1" dir="ltr">
           {days.map((d, i) => {
             const share = max > 0 ? d.amount / max : 0;
             const lit = i === peak;
             return (
-              <span key={i} className="flex flex-col items-center gap-2">
-                <span className="relative flex h-[104px] w-full items-end">
+              <span key={i} className="flex flex-col items-center gap-1">
+                <span className="relative flex h-[64px] w-full items-end border-b border-line">
                   {lit && (
-                    <span className="absolute inset-x-[-10px] grid place-items-center" style={{ bottom: `calc(${height(share)} + 6px)` }}>
-                      <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[12px] font-semibold whitespace-nowrap text-ink shadow-sm">
+                    <span className="absolute inset-x-[-12px] grid place-items-center" style={{ bottom: `calc(${height(share)} + 5px)` }}>
+                      <span
+                        className="rounded-full px-2 py-px text-[12px] font-medium whitespace-nowrap text-ink"
+                        style={{ background: 'color-mix(in oklab, var(--coin) 18%, var(--surface))' }}
+                      >
                         <Money value={d.amount} sign />
                       </span>
                     </span>
                   )}
                   <motion.span
-                    className="block w-full rounded-t-[14px] rounded-b-[4px]"
+                    className="block w-full rounded-t-[16px]"
                     style={{
-                      background: lit ? 'var(--coin)' : 'color-mix(in oklab, var(--coin) 34%, var(--surface))',
+                      background: lit
+                        ? 'linear-gradient(to bottom, color-mix(in oklab, var(--coin) 88%, white), var(--coin) 55%, color-mix(in oklab, var(--coin) 92%, black))'
+                        : 'linear-gradient(to bottom, color-mix(in oklab, var(--coin) 30%, var(--surface)), color-mix(in oklab, var(--coin) 40%, var(--surface)))',
                       transformOrigin: 'bottom',
                       height: height(share),
                     }}
@@ -364,15 +370,15 @@ function ActionButton({ label, icon, onClick }: { label: string; icon: ReactNode
     <button
       type="button"
       onClick={onClick}
-      className="card press group flex min-h-[84px] flex-col items-center justify-center gap-1.5 transition-transform duration-300 hover:-translate-y-0.5 hover:border-line-strong"
+      className="card press group flex min-h-[64px] flex-col items-center justify-center gap-0.5 py-2 transition-transform duration-300 hover:-translate-y-0.5 hover:border-line-strong"
     >
       <span
-        className="grid size-8 place-items-center text-ink transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-0.5 group-hover:scale-110"
+        className="grid size-7 place-items-center text-ink transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:-translate-y-0.5 group-hover:scale-110"
         aria-hidden
       >
         {icon}
       </span>
-      <span className="text-[15px] font-semibold">{label}</span>
+      <span className="text-[17px] leading-tight font-medium">{label}</span>
     </button>
   );
 }

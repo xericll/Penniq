@@ -48,13 +48,13 @@ export function TabBar({ tab, onTab, onNew, hidden }: NavProps & { hidden: boole
           onTab(x.id);
         }}
         aria-current={active ? 'page' : undefined}
-        className={`press relative flex min-h-[60px] flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl text-[11px] transition-colors duration-300 ${
+        className={`press relative flex min-h-[66px] flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl text-[13px] transition-colors duration-300 ${
           active ? 'font-semibold' : 'font-medium'
         }`}
         style={{ color: active ? 'var(--nav-ink-on)' : 'var(--nav-ink)' }}
       >
         <Icon
-          className={`size-[22px] transition-transform duration-500 ${active ? '-translate-y-0.5' : ''}`}
+          className={`size-[21px] transition-transform duration-500 ${active ? '-translate-y-0.5' : ''}`}
           strokeWidth={active ? 2 : 1.6}
           aria-hidden
         />
@@ -98,12 +98,12 @@ export function TabBar({ tab, onTab, onNew, hidden }: NavProps & { hidden: boole
             }}
             whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.05 }}
-            className="coin relative -mt-8 grid size-[60px] place-items-center overflow-visible rounded-full"
-            style={{ boxShadow: '0 0 0 5px var(--bg), 0 14px 26px -10px rgba(0,0,0,.45)' }}
+            className="coin relative -mt-8 grid size-[58px] place-items-center overflow-visible rounded-full"
+            style={{ boxShadow: '0 0 0 5px var(--coin-ring), 0 10px 22px -8px rgba(0,0,0,.4)' }}
             aria-label={t('nav.new')}
           >
             {ping > 0 && <span key={ping} className="coin-ping pointer-events-none absolute inset-0 rounded-full" aria-hidden />}
-            <Plus className="size-7" strokeWidth={2.2} />
+            <Plus className="size-[30px]" strokeWidth={1.7} />
           </motion.button>
         </div>
         {right.map(item)}

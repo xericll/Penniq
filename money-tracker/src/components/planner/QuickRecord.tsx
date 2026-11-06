@@ -58,7 +58,11 @@ export function TemplateRail() {
   const record = useRecord();
 
   return (
-    <div className="no-scrollbar rail-fade -mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5" role="group" aria-label={t('templates.title')}>
+    <div
+      className="no-scrollbar rail-fade -mx-4 flex gap-2 overflow-x-auto px-4 pt-0.5 pb-1.5"
+      role="group"
+      aria-label={t('templates.title')}
+    >
       {templates.map((tpl) => {
         const cat = tpl.type === 'expense' ? categoryById(tpl.category ?? 'other') : null;
         const Icon = cat?.icon ?? Zap;
@@ -68,19 +72,23 @@ export function TemplateRail() {
             type="button"
             onClick={() => record(templateEntry(tpl))}
             aria-label={t('templates.recordLabel', { name: tpl.name })}
-            className="chip press shrink-0 bg-surface !text-ink hover:border-foil"
+            className="chip press !min-h-[34px] shrink-0 border-transparent bg-surface !gap-1.5 !px-2.5 !text-[13px] !font-medium !text-ink shadow-[var(--shadow)] hover:border-foil"
           >
-            <Icon className="size-4 shrink-0 text-ink" aria-hidden />
+            <Icon className={`size-4 shrink-0 ${tpl.type === 'income' ? 'text-coin' : 'text-ink'}`} aria-hidden />
             <span className="max-w-[9rem] truncate">{tpl.name}</span>
             <Money
               value={tpl.type === 'expense' ? -tpl.amount : tpl.amount}
               sign={tpl.type === 'income'}
-              className="text-[14px] font-semibold text-ink"
+              className="text-[13px] font-medium text-ink"
             />
           </button>
         );
       })}
-      <button type="button" onClick={() => tools.open({ name: 'templates' })} className="chip press shrink-0 border-dashed text-ink-3">
+      <button
+        type="button"
+        onClick={() => tools.open({ name: 'templates' })}
+        className="chip press !min-h-[34px] shrink-0 border-dashed !gap-1 !px-2.5 !text-[13px] text-ink-3"
+      >
         {templates.length ? <Pencil className="size-3.5" aria-hidden /> : <Plus className="size-4" aria-hidden />}
         {templates.length ? t('templates.manage') : t('templates.addFirst')}
       </button>

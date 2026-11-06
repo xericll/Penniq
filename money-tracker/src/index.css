@@ -53,53 +53,59 @@
 :root,
 [data-edition="terracotta"] {
   color-scheme: light;
-  --bg: #f5ebe3;
-  --bg-elev: #f9f0e9;
-  --surface: #fcf4ee;
-  --surface-2: #efe7e1;
-  --line: rgba(30, 19, 13, 0.08);
-  --line-strong: rgba(30, 19, 13, 0.16);
-  --ink: #1e130d;
-  --ink-2: #554a43;
-  --ink-3: #6f645e;
-  --foil: #a45330;
-  --foil-hi: #e09777;
-  --foil-lo: #834226;
-  --on-foil: #fcf4ee;
-  --primary: #d26a40;
-  --primary-hi: #d87f5b;
-  --primary-lo: #b05936;
-  --on-primary: #1e130d;
-  --coin: #d36a3c;
-  --coin-hi: #e09777;
-  --coin-lo: #ad5731;
-  --on-coin: #1e130d;
+  --bg: #f8eae1;
+  --bg-elev: #f9ebe2;
+  --surface: #faebe3;
+  --surface-2: #ecd6c8;
+  --line: rgba(42, 31, 23, 0.05);
+  --line-strong: rgba(42, 31, 23, 0.16);
+  --ink: #2a1f17;
+  --ink-2: #4e4337;
+  --ink-3: #76685d;
+  --foil: #9e5836;
+  --foil-hi: #e9a17e;
+  --foil-lo: #7e462b;
+  --on-foil: #faebe3;
+  --primary: #c95d37;
+  --primary-hi: #d17453;
+  --primary-lo: #a94e2e;
+  --on-primary: #ffffff;
+  --coin: #df7847;
+  --coin-hi: #e9a17e;
+  --coin-lo: #b7623a;
+  --on-coin: #fff0de;
+  --coin-ring: #fbe4d0;
+  --assist-bg: #f3e0d2;
+  --icon-tile: #f2d0b5;
   --in: #3d7a4f;
   --out: #b9452a;
-  --cash: #c95c31;
-  --bank: #a64d2c;
-  --note-bg: #d26a40;
-  --note-bg-2: #bb5631;
-  --note-ink: #fff4ea;
-  --note-ink-2: #fff4ea;
-  --note-line: rgba(255, 164, 118, 0.32);
-  --note-foil: #ffa476;
-  --note-chip: #fbe6d9;
-  --note-chip-ink: #472113;
-  --nav-bg: #382c28;
-  --nav-ink: #b3afad;
-  --nav-ink-on: #ef8a55;
-  --leaf-a: #bb5631;
-  --leaf-b: #d26a40;
-  --leaf-c: #e29e83;
-  --leaf-d: #eec6b6;
-  --stem: #a54c2b;
-  --leaf-shadow: rgba(30, 19, 13, 0.22);
+  --cash: #c85d31;
+  --bank: #c85d31;
+  --note-bg: #c95d37;
+  --note-bg-2: #bf532b;
+  --note-ink: #ffe4c8;
+  --note-ink-2: #ffdbbd;
+  --note-line: rgba(254, 167, 118, 0.32);
+  --note-foil: #fea776;
+  --note-hi: #d6714a;
+  --note-bank: #fbe8d8;
+  --note-shadow: 0 9px 20px -5px rgba(185, 85, 45, 0.42);
+  --note-chip: #f0d8c5;
+  --note-chip-ink: #3a2615;
+  --nav-bg: #392e2b;
+  --nav-ink: #efe4dc;
+  --nav-ink-on: #ef8d5c;
+  --leaf-a: #bf532b;
+  --leaf-b: #d76f42;
+  --leaf-c: #dc967d;
+  --leaf-d: #eac1b3;
+  --stem: #a84926;
+  --leaf-shadow: rgba(42, 31, 23, 0.22);
   --leaf-opacity: 1;
   --fruit-opacity: 0;
-  --scrim: rgba(30, 19, 13, 0.45);
-  --shadow: 0 1px 2px rgba(30, 19, 13, 0.05), 0 14px 30px -18px rgba(109, 53, 31, 0.32);
-  --grain-opacity: 0.035;
+  --scrim: rgba(42, 31, 23, 0.45);
+  --shadow: 0 1px 2px rgba(150, 95, 65, 0.1), 0 5px 13px rgba(150, 95, 65, 0.2);
+  --grain-opacity: 0;
 }
 
 [data-edition="parchment"] {
@@ -125,6 +131,9 @@
   --coin-hi: #d4c3a4;
   --coin-lo: #9f8b67;
   --on-coin: #26271a;
+  --coin-ring: #f4efe5;
+  --assist-bg: #f2ece0;
+  --icon-tile: #e0d7c9;
   --in: #3d6b3f;
   --out: #a3472f;
   --cash: #8a6d46;
@@ -135,6 +144,9 @@
   --note-ink-2: #d3cfbf;
   --note-line: rgba(194, 169, 125, 0.32);
   --note-foil: #c2a97d;
+  --note-hi: #66674b;
+  --note-bank: #e3ded1;
+  --note-shadow: 0 9px 20px -6px rgba(63, 64, 39, 0.4);
   --note-chip: #e3ded1;
   --note-chip-ink: #18180f;
   --nav-bg: #2a2b1b;
@@ -149,7 +161,7 @@
   --leaf-opacity: 1;
   --fruit-opacity: 1;
   --scrim: rgba(38, 39, 26, 0.45);
-  --shadow: 0 1px 2px rgba(38, 39, 26, 0.05), 0 14px 30px -18px rgba(51, 52, 33, 0.32);
+  --shadow: 0 1px 2px rgba(51, 52, 33, 0.08), 0 5px 13px rgba(51, 52, 33, 0.16);
   --grain-opacity: 0.035;
 }
 
@@ -176,6 +188,9 @@
   --coin-hi: #d4c3a4;
   --coin-lo: #9f8b67;
   --on-coin: #1a2030;
+  --coin-ring: #1a2030;
+  --assist-bg: #383c44;
+  --icon-tile: #424348;
   --in: #7cb894;
   --out: #e3907a;
   --cash: #c2a97d;
@@ -186,6 +201,9 @@
   --note-ink-2: #cecdcc;
   --note-line: rgba(194, 169, 125, 0.32);
   --note-foil: #c2a97d;
+  --note-hi: #4c5a7c;
+  --note-bank: #e1ded8;
+  --note-shadow: 0 22px 40px -22px rgba(0, 0, 0, 0.7);
   --note-chip: #e1ded8;
   --note-chip-ink: #0d111b;
   --nav-bg: #11151f;
@@ -227,6 +245,9 @@
   --coin-hi: #d9c8a5;
   --coin-lo: #a59068;
   --on-coin: #33341f;
+  --coin-ring: #33341f;
+  --assist-bg: #514f35;
+  --icon-tile: #5a563a;
   --in: #a8cf9a;
   --out: #eba184;
   --cash: #c9b07f;
@@ -237,6 +258,9 @@
   --note-ink-2: #555444;
   --note-line: rgba(138, 109, 70, 0.32);
   --note-foil: #8a6d46;
+  --note-hi: #f1ede3;
+  --note-bank: #414230;
+  --note-shadow: 0 22px 40px -22px rgba(0, 0, 0, 0.7);
   --note-chip: #414230;
   --note-chip-ink: #efeadf;
   --nav-bg: #202113;
@@ -278,6 +302,9 @@
   --coin-hi: #bf605d;
   --coin-lo: #861714;
   --on-coin: #ffffff;
+  --coin-ring: #efe6e5;
+  --assist-bg: #ecdedc;
+  --icon-tile: #c7d5d5;
   --in: #25705a;
   --out: #861211;
   --cash: #1f5a5e;
@@ -288,6 +315,9 @@
   --note-ink-2: #c5d7d7;
   --note-line: rgba(233, 142, 134, 0.32);
   --note-foil: #e98e86;
+  --note-hi: #3a6e71;
+  --note-bank: #d9e6e6;
+  --note-shadow: 0 9px 20px -6px rgba(18, 72, 76, 0.4);
   --note-chip: #d9e6e6;
   --note-chip-ink: #071b1d;
   --nav-bg: #0e2126;
@@ -302,7 +332,7 @@
   --leaf-opacity: 1;
   --fruit-opacity: 0;
   --scrim: rgba(14, 41, 49, 0.45);
-  --shadow: 0 1px 2px rgba(14, 41, 49, 0.05), 0 14px 30px -18px rgba(16, 57, 63, 0.32);
+  --shadow: 0 1px 2px rgba(16, 57, 63, 0.08), 0 5px 13px rgba(16, 57, 63, 0.16);
   --grain-opacity: 0.035;
 }
 
@@ -329,6 +359,9 @@
   --coin-hi: #e2ca9b;
   --coin-lo: #af935c;
   --on-coin: #101a2c;
+  --coin-ring: #f8f2e5;
+  --assist-bg: #f6f0e0;
+  --icon-tile: #caced1;
   --in: #2f7a52;
   --out: #b0452c;
   --cash: #1d3a66;
@@ -339,6 +372,9 @@
   --note-ink-2: #cbccc9;
   --note-line: rgba(213, 179, 112, 0.32);
   --note-foil: #d5b370;
+  --note-hi: #385278;
+  --note-bank: #e0dfd6;
+  --note-shadow: 0 9px 20px -6px rgba(17, 40, 77, 0.4);
   --note-chip: #e0dfd6;
   --note-chip-ink: #060f1d;
   --nav-bg: #111a2b;
@@ -353,7 +389,7 @@
   --leaf-opacity: 1;
   --fruit-opacity: 0;
   --scrim: rgba(16, 26, 44, 0.45);
-  --shadow: 0 1px 2px rgba(16, 26, 44, 0.05), 0 14px 30px -18px rgba(17, 33, 61, 0.32);
+  --shadow: 0 1px 2px rgba(17, 33, 61, 0.08), 0 5px 13px rgba(17, 33, 61, 0.16);
   --grain-opacity: 0.035;
 }
 
@@ -380,6 +416,9 @@
   --coin-hi: #f99872;
   --coin-lo: #cb592b;
   --on-coin: #0f2552;
+  --coin-ring: #f7efed;
+  --assist-bg: #f7e9e5;
+  --icon-tile: #c7d5ec;
   --in: #22805a;
   --out: #c8421c;
   --cash: #1c54b0;
@@ -390,6 +429,9 @@
   --note-ink-2: #c7d6ed;
   --note-line: rgba(255, 154, 107, 0.32);
   --note-foil: #ff9a6b;
+  --note-hi: #3769b9;
+  --note-bank: #dde7f4;
+  --note-shadow: 0 9px 20px -6px rgba(23, 71, 156, 0.4);
   --note-chip: #dde7f4;
   --note-chip-ink: #091b3b;
   --nav-bg: #0f1d3d;
@@ -404,7 +446,7 @@
   --leaf-opacity: 1;
   --fruit-opacity: 0;
   --scrim: rgba(15, 37, 82, 0.45);
-  --shadow: 0 1px 2px rgba(15, 37, 82, 0.05), 0 14px 30px -18px rgba(19, 54, 119, 0.32);
+  --shadow: 0 1px 2px rgba(19, 54, 119, 0.08), 0 5px 13px rgba(19, 54, 119, 0.16);
   --grain-opacity: 0.035;
 }
 
@@ -431,6 +473,9 @@
   --coin-hi: #ffd297;
   --coin-lo: #d19d58;
   --on-coin: #10284f;
+  --coin-ring: #fff5ea;
+  --assist-bg: #fff3e4;
+  --icon-tile: #cdd9eb;
   --in: #22805a;
   --out: #c8442c;
   --cash: #1d66c9;
@@ -441,6 +486,9 @@
   --note-ink-2: #e0ecfa;
   --note-line: rgba(255, 200, 138, 0.32);
   --note-foil: #ffc88a;
+  --note-hi: #3878cf;
+  --note-bank: #dfeafa;
+  --note-shadow: 0 9px 20px -6px rgba(21, 87, 173, 0.4);
   --note-chip: #dfeafa;
   --note-chip-ink: #082142;
   --nav-bg: #13254a;
@@ -455,7 +503,7 @@
   --leaf-opacity: 1;
   --fruit-opacity: 0;
   --scrim: rgba(16, 40, 79, 0.45);
-  --shadow: 0 1px 2px rgba(16, 40, 79, 0.05), 0 14px 30px -18px rgba(19, 64, 126, 0.32);
+  --shadow: 0 1px 2px rgba(19, 64, 126, 0.08), 0 5px 13px rgba(19, 64, 126, 0.16);
   --grain-opacity: 0.035;
 }
 
@@ -482,6 +530,9 @@
   --coin-hi: #e9be9f;
   --coin-lo: #b88561;
   --on-coin: #1d2a38;
+  --coin-ring: #f9efe8;
+  --assist-bg: #f8ece3;
+  --icon-tile: #cfd5dc;
   --in: #3a7656;
   --out: #b0493f;
   --cash: #33608f;
@@ -492,6 +543,9 @@
   --note-ink-2: #d5d9dc;
   --note-line: rgba(240, 180, 138, 0.32);
   --note-foil: #f0b48a;
+  --note-hi: #4b739c;
+  --note-bank: #e3e3e3;
+  --note-shadow: 0 9px 20px -6px rgba(42, 80, 120, 0.4);
   --note-chip: #e3e3e3;
   --note-chip-ink: #101e2e;
   --nav-bg: #1d2733;
@@ -506,7 +560,7 @@
   --leaf-opacity: 1;
   --fruit-opacity: 0;
   --scrim: rgba(29, 42, 56, 0.45);
-  --shadow: 0 1px 2px rgba(29, 42, 56, 0.05), 0 14px 30px -18px rgba(36, 61, 88, 0.32);
+  --shadow: 0 1px 2px rgba(36, 61, 88, 0.08), 0 5px 13px rgba(36, 61, 88, 0.16);
   --grain-opacity: 0.035;
 }
 
@@ -533,6 +587,9 @@
   --coin-hi: #e47b79;
   --coin-lo: #b23734;
   --on-coin: #ffffff;
+  --coin-ring: #f8eae9;
+  --assist-bg: #f7e2e2;
+  --icon-tile: #dfcfd3;
   --in: #2f7a52;
   --out: #b8322e;
   --cash: #7a3c51;
@@ -543,6 +600,9 @@
   --note-ink-2: #e1ced3;
   --note-line: rgba(243, 170, 164, 0.32);
   --note-foil: #f3aaa4;
+  --note-hi: #8a5366;
+  --note-bank: #eee0e3;
+  --note-shadow: 0 9px 20px -6px rgba(94, 52, 67, 0.4);
   --note-chip: #eee0e3;
   --note-chip-ink: #241419;
   --nav-bg: #1b1622;
@@ -557,7 +617,7 @@
   --leaf-opacity: 1;
   --fruit-opacity: 0;
   --scrim: rgba(20, 19, 28, 0.45);
-  --shadow: 0 1px 2px rgba(20, 19, 28, 0.05), 0 14px 30px -18px rgba(57, 36, 48, 0.32);
+  --shadow: 0 1px 2px rgba(57, 36, 48, 0.08), 0 5px 13px rgba(57, 36, 48, 0.16);
   --grain-opacity: 0.035;
 }
 
@@ -584,6 +644,9 @@
   --coin-hi: #f29791;
   --coin-lo: #c25750;
   --on-coin: #0e2931;
+  --coin-ring: #0e2931;
+  --assist-bg: #313e45;
+  --icon-tile: #255056;
   --in: #7fd1b4;
   --out: #f0766c;
   --cash: #6fb3b0;
@@ -594,6 +657,9 @@
   --note-ink-2: #e7efee;
   --note-line: rgba(242, 163, 156, 0.32);
   --note-foil: #f2a39c;
+  --note-hi: #448685;
+  --note-bank: #dde8e7;
+  --note-shadow: 0 22px 40px -22px rgba(0, 0, 0, 0.7);
   --note-chip: #dde8e7;
   --note-chip-ink: #0b2324;
   --nav-bg: #081a1f;
@@ -635,6 +701,9 @@
   --coin-hi: #e2ca9b;
   --coin-lo: #af935c;
   --on-coin: #101a2c;
+  --coin-ring: #101a2c;
+  --assist-bg: #323847;
+  --icon-tile: #2c3d5d;
   --in: #8fd0a8;
   --out: #f0875f;
   --cash: #7fa3cf;
@@ -645,6 +714,9 @@
   --note-ink-2: #ced2cf;
   --note-line: rgba(226, 194, 127, 0.32);
   --note-foil: #e2c27f;
+  --note-hi: #456a92;
+  --note-bank: #e2e2d9;
+  --note-shadow: 0 22px 40px -22px rgba(0, 0, 0, 0.7);
   --note-chip: #e2e2d9;
   --note-chip-ink: #0b1827;
   --nav-bg: #0a111e;
@@ -686,6 +758,9 @@
   --coin-hi: #e2c885;
   --coin-lo: #af9042;
   --on-coin: #161f33;
+  --coin-ring: #161f33;
+  --assist-bg: #383d46;
+  --icon-tile: #34425f;
   --in: #8fd0a8;
   --out: #f08a7a;
   --cash: #8ea4cc;
@@ -696,6 +771,9 @@
   --note-ink-2: #ced4e1;
   --note-line: rgba(227, 192, 96, 0.32);
   --note-foil: #e3c060;
+  --note-hi: #546a93;
+  --note-bank: #e0e4ec;
+  --note-shadow: 0 22px 40px -22px rgba(0, 0, 0, 0.7);
   --note-chip: #e0e4ec;
   --note-chip-ink: #111928;
   --nav-bg: #0e1524;
@@ -737,6 +815,9 @@
   --coin-hi: #f99872;
   --coin-lo: #cb592b;
   --on-coin: #0e1f45;
+  --coin-ring: #0e1f45;
+  --assist-bg: #353355;
+  --icon-tile: #274575;
   --in: #8fe0b0;
   --out: #ff8a6a;
   --cash: #6fb3e3;
@@ -747,6 +828,9 @@
   --note-ink-2: #eff6fc;
   --note-line: rgba(255, 162, 122, 0.32);
   --note-foil: #ffa27a;
+  --note-hi: #3585b9;
+  --note-bank: #dcebf5;
+  --note-shadow: 0 22px 40px -22px rgba(0, 0, 0, 0.7);
   --note-chip: #dcebf5;
   --note-chip-ink: #09203b;
   --nav-bg: #081430;
@@ -788,6 +872,9 @@
   --coin-hi: #e9be9f;
   --coin-lo: #b88561;
   --on-coin: #182231;
+  --coin-ring: #182231;
+  --assist-bg: #3c404b;
+  --icon-tile: #47474e;
   --in: #8fd6a8;
   --out: #f09482;
   --cash: #e0a276;
@@ -798,6 +885,9 @@
   --note-ink-2: #412b1d;
   --note-line: rgba(46, 90, 136, 0.32);
   --note-foil: #2e5a88;
+  --note-hi: #e4ad86;
+  --note-bank: #3c281a;
+  --note-shadow: 0 22px 40px -22px rgba(0, 0, 0, 0.7);
   --note-chip: #3c281a;
   --note-chip-ink: #e0a276;
   --nav-bg: #0f1620;
@@ -839,6 +929,9 @@
   --coin-hi: #e47b79;
   --coin-lo: #b23734;
   --on-coin: #0b0a12;
+  --coin-ring: #0b0a12;
+  --assist-bg: #301e2a;
+  --icon-tile: #2d3243;
   --in: #8fd6a8;
   --out: #ff7a72;
   --cash: #8d9bb5;
@@ -849,6 +942,9 @@
   --note-ink-2: #c6c9d8;
   --note-line: rgba(239, 106, 100, 0.32);
   --note-foil: #ef6a64;
+  --note-hi: #354c81;
+  --note-bank: #dcdbe5;
+  --note-shadow: 0 22px 40px -22px rgba(0, 0, 0, 0.7);
   --note-chip: #dcdbe5;
   --note-chip-ink: #050d1e;
   --nav-bg: #050409;

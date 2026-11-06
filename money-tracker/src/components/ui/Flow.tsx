@@ -28,10 +28,10 @@ function threads(count: number): { body: string[]; tail: string[] } {
   for (let i = 0; i < count; i++) {
     const s = i / (count - 1) - 0.5;
     // Fanned wide at the left edge, a soft wave through the middle, all threads meeting at the spark.
-    const y0 = 330 + s * 270;
+    const y0 = 300 + s * 170;
     body.push(
-      `M-10 ${y0.toFixed(1)}C${(170 + s * 30).toFixed(1)} ${(y0 - 150 + s * 70).toFixed(1)} ` +
-        `${(310 - s * 20).toFixed(1)} ${(235 + s * 95).toFixed(1)} ${px} ${py}`,
+      `M-10 ${y0.toFixed(1)}C${(180 + s * 40).toFixed(1)} ${(y0 - 110 + s * 60).toFixed(1)} ` +
+        `${(300 - s * 30).toFixed(1)} ${(225 + s * 80).toFixed(1)} ${px} ${py}`,
     );
     // A short, faint tail that fans open again on its way up and out (every other thread).
     if (i % 2 === 0) {

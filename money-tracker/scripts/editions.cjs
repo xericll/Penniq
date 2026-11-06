@@ -5,7 +5,11 @@
 // appearance blocks in src/index.css (between "Appearances" and "Unlayered on purpose").
 const T = [
   // The design the user supplied (November 2026): the new default light appearance.
-  { id: 'terracotta', ar: 'تيراكوتا', de: 'Terrakotta', en: 'Terracotta', bg: '#f5ebe3', surface: '#fcf4ee', ink: '#1e130d', note: '#d26a40', note2: '#bb5631', noteInk: '#fff4ea', noteFoil: '#ffa476', coin: '#d36a3c', dock: '#382c28', navOn: '#ef8a55', cash: '#c95c31', bank: '#a64d2c', inc: '#3d7a4f', out: '#b9452a' },
+  // Every value below was sampled from the design image (median colour of each element), so it matches it exactly.
+  { id: 'terracotta', ar: 'تيراكوتا', de: 'Terrakotta', en: 'Terracotta', bg: '#f8eae1', surface: '#faebe3', surface2: '#ecd6c8', ink: '#2a1f17', ink2: '#4e4337', ink3: '#76685d',
+    note: '#c95d37', note2: '#bf532b', noteHi: '#d6714a', noteInk: '#ffe4c8', noteInk2: '#ffdbbd', noteFoil: '#fea776', noteBank: '#fbe8d8', chip: '#f0d8c5', chipInk: '#3a2615',
+    coin: '#df7847', onCoin: '#fff0de', coinRing: '#fbe4d0', assist: '#f3e0d2', dock: '#392e2b', navInk: '#efe4dc', navOn: '#ef8d5c', cash: '#c85d31', bank: '#c85d31',
+    leaf: '#d76f42', iconTile: '#f2d0b5', grain: '0', line: 0.05, shadow: '0 1px 2px rgba(150, 95, 65, 0.1), 0 5px 13px rgba(150, 95, 65, 0.2)', noteShadow: '0 9px 20px -5px rgba(185, 85, 45, 0.42)', inc: '#3d7a4f', out: '#b9452a' },
   // Brand appearances
   { id: 'parchment', brand: true, bg: '#efeadf', surface: '#f8f5ee', ink: '#26271a', note: '#515233', note2: '#3f4027', noteInk: '#f3eee2', noteFoil: '#c2a97d', coin: '#c2a97d', dock: '#2a2b1b', navOn: '#d9c39a', cash: '#8a6d46', bank: '#515233', inc: '#3d6b3f', out: '#a3472f' },
   { id: 'navy', brand: true, dark: true, bg: '#1a2030', surface: '#222a3b', ink: '#efeadf', note: '#34436a', note2: '#232d47', noteInk: '#f4efe4', noteFoil: '#c2a97d', coin: '#c2a97d', dock: '#11151f', navOn: '#e2cfa6', cash: '#c2a97d', bank: '#8f9bb8', inc: '#7cb894', out: '#e3907a' },
@@ -41,26 +45,27 @@ const on = (c, a, b) => (cr(c, a) >= cr(c, b) ? a : b);
 const problems = [];
 function block(p) {
   const d = !!p.dark;
-  const surface2 = mix(p.surface, p.ink, d ? 0.07 : 0.06);
+  // Any value a palette states (sampled from a design) wins over the derived one.
+  const surface2 = p.surface2 ?? mix(p.surface, p.ink, d ? 0.07 : 0.06);
   const backs = [p.bg, p.surface, surface2];
-  const ink2 = reach(mix(p.ink, p.bg, 0.3), p.ink, backs, 7);
-  const ink3 = reach(mix(p.ink, p.bg, 0.45), p.ink, backs, 4.6);
+  const ink2 = p.ink2 ?? reach(mix(p.ink, p.bg, 0.3), p.ink, backs, 7);
+  const ink3 = p.ink3 ?? reach(mix(p.ink, p.bg, 0.45), p.ink, backs, 4.6);
   const foil = d ? reach(p.coin, '#ffffff', [p.surface], 4.5) : reach(p.coin, p.ink, [p.surface, p.bg], 4.5);
   const darkInk = d ? p.bg : p.ink;
   const lightInk = d ? p.ink : p.surface;
   // Primary buttons: the banknote colour on light pages, the coin on dark ones.
   const primary = d ? p.coin : reach(p.note, p.note2, [p.surface], 3);
   const onPrimary = on(primary, d ? p.bg : p.ink, '#ffffff');
-  const chip = mix(p.noteInk, p.note, 0.1);
-  const chipInk = on(chip, mix(p.note2, '#000000', 0.62), p.note);
-  const navInk = reach(mix(p.dock, '#ffffff', 0.62), '#ffffff', [p.dock], 4.6);
+  const chip = p.chip ?? mix(p.noteInk, p.note, 0.1);
+  const chipInk = p.chipInk ?? on(chip, mix(p.note2, '#000000', 0.62), p.note);
+  const navInk = p.navInk ?? reach(mix(p.dock, '#ffffff', 0.62), '#ffffff', [p.dock], 4.6);
   const t = {
     'color-scheme': d ? 'dark' : 'light',
     '--bg': p.bg,
     '--bg-elev': mix(p.bg, p.surface, 0.5),
     '--surface': p.surface,
     '--surface-2': surface2,
-    '--line': rgba(p.ink, d ? 0.1 : 0.08),
+    '--line': rgba(p.ink, p.line ?? (d ? 0.1 : 0.08)),
     '--line-strong': rgba(p.ink, d ? 0.19 : 0.16),
     '--ink': p.ink,
     '--ink-2': ink2,
@@ -76,7 +81,12 @@ function block(p) {
     '--coin': p.coin,
     '--coin-hi': mix(p.coin, '#ffffff', 0.3),
     '--coin-lo': mix(p.coin, '#000000', 0.18),
-    '--on-coin': on(p.coin, d ? p.bg : p.ink, '#ffffff'),
+    '--on-coin': p.onCoin ?? on(p.coin, d ? p.bg : p.ink, '#ffffff'),
+    // The ring round the transfer coin and the + button, and the filled assistant button.
+    '--coin-ring': p.coinRing ?? (d ? p.bg : mix(p.surface, p.coin, 0.08)),
+    '--assist-bg': p.assist ?? mix(p.surface, p.coin, d ? 0.14 : 0.12),
+    // The rounded square behind the cash and bank icons.
+    '--icon-tile': p.iconTile ?? mix(p.surface, p.cash, d ? 0.2 : 0.22),
     '--in': p.inc,
     '--out': p.out,
     '--cash': p.cash,
@@ -84,9 +94,13 @@ function block(p) {
     '--note-bg': p.note,
     '--note-bg-2': p.note2,
     '--note-ink': p.noteInk,
-    '--note-ink-2': reach(mix(p.noteInk, p.note, 0.2), p.noteInk, [p.note, p.note2], 4.6),
+    '--note-ink-2': p.noteInk2 ?? reach(mix(p.noteInk, p.note, 0.2), p.noteInk, [p.note, p.note2], 4.6),
     '--note-line': rgba(p.noteFoil, 0.32),
     '--note-foil': p.noteFoil,
+    // Light in the note's top corner, the bank share of its split bar, and its shadow.
+    '--note-hi': p.noteHi ?? mix(p.note, '#ffffff', 0.12),
+    '--note-bank': p.noteBank ?? mix(p.noteInk, p.note, 0.1),
+    '--note-shadow': p.noteShadow ?? (d ? '0 22px 40px -22px rgba(0, 0, 0, 0.7)' : `0 9px 20px -6px ${rgba(p.note2, 0.4)}`),
     '--note-chip': chip,
     '--note-chip-ink': chipInk,
     '--nav-bg': p.dock,
@@ -94,7 +108,7 @@ function block(p) {
     '--nav-ink-on': p.navOn,
     // Leaves in shades of the banknote colour; the brand appearances keep their olive fruit.
     '--leaf-a': p.brand ? '#5f6339' : p.note2,
-    '--leaf-b': p.brand ? '#868a5c' : p.note,
+    '--leaf-b': p.brand ? '#868a5c' : (p.leaf ?? p.note),
     '--leaf-c': p.brand ? '#b4b693' : mix(p.note, '#ffffff', 0.35),
     '--leaf-d': p.brand ? '#d3d4bd' : mix(p.note, '#ffffff', 0.62),
     '--stem': p.brand ? '#6f6141' : mix(p.note2, '#000000', 0.12),
@@ -102,10 +116,13 @@ function block(p) {
     '--leaf-opacity': d ? '0.85' : '1',
     '--fruit-opacity': p.brand ? '1' : '0',
     '--scrim': rgba(d ? mix(p.bg, '#000000', 0.5) : p.ink, d ? 0.62 : 0.45),
-    '--shadow': d
-      ? '0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 18px 40px -24px rgba(0, 0, 0, 0.75)'
-      : `0 1px 2px ${rgba(p.ink, 0.05)}, 0 14px 30px -18px ${rgba(mix(p.note2, p.ink, 0.5), 0.32)}`,
-    '--grain-opacity': d ? '0.04' : '0.035',
+    // Soft, warm shadow close under every card, as in the design.
+    '--shadow':
+      p.shadow ??
+      (d
+        ? '0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 18px 40px -24px rgba(0, 0, 0, 0.75)'
+        : `0 1px 2px ${rgba(mix(p.note2, p.ink, 0.5), 0.08)}, 0 5px 13px ${rgba(mix(p.note2, p.ink, 0.5), 0.16)}`),
+    '--grain-opacity': p.grain ?? (d ? '0.04' : '0.035'),
   };
   const checks = [
     ['ink-3/surface-2', ink3, surface2, 4.5], ['foil/surface', foil, p.surface, 4.5], ['on-primary', onPrimary, primary, 4.5],
