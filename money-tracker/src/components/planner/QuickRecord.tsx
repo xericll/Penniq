@@ -70,12 +70,12 @@ export function TemplateRail() {
             aria-label={t('templates.recordLabel', { name: tpl.name })}
             className="chip press shrink-0 bg-surface !text-ink hover:border-foil"
           >
-            <Icon className="size-4 shrink-0" style={{ color: cat?.hue ?? 'var(--in)' }} aria-hidden />
+            <Icon className="size-4 shrink-0 text-ink" aria-hidden />
             <span className="max-w-[9rem] truncate">{tpl.name}</span>
             <Money
               value={tpl.type === 'expense' ? -tpl.amount : tpl.amount}
               sign={tpl.type === 'income'}
-              className="text-[13px] text-ink-3"
+              className="text-[14px] font-semibold text-ink"
             />
           </button>
         );

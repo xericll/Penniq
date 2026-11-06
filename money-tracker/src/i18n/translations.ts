@@ -197,6 +197,7 @@ const ar = {
 
   'theme.auto': 'تلقائي',
   'theme.autoHint': 'يتبع وضع جهازك',
+  'theme.terracotta': 'تيراكوتا',
   'theme.parchment': 'رَقّ',
   'theme.navy': 'كحلي',
   'theme.olive': 'زيتوني',
@@ -733,6 +734,7 @@ const de: Dictionary = {
 
   'theme.auto': 'Automatisch',
   'theme.autoHint': 'Folgt deinem Gerät',
+  'theme.terracotta': 'Terrakotta',
   'theme.parchment': 'Pergament',
   'theme.navy': 'Marine',
   'theme.olive': 'Olive',
@@ -1284,6 +1286,7 @@ const en: Dictionary = {
 
   'theme.auto': 'Automatic',
   'theme.autoHint': 'Follows your device',
+  'theme.terracotta': 'Terracotta',
   'theme.parchment': 'Parchment',
   'theme.navy': 'Navy',
   'theme.olive': 'Olive',

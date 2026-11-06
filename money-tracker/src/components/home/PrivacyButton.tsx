@@ -1,10 +1,10 @@
 import { Eye, EyeOff } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, type CSSProperties } from 'react';
 import { useI18n } from '../../i18n/LanguageContext';
 import { usePrivacy } from '../../state/PrivacyContext';
 
 /** Tap to hide/show every amount; while hidden, press and hold to peek. */
-export function PrivacyButton({ className = '' }: { className?: string }) {
+export function PrivacyButton({ className = '', style }: { className?: string; style?: CSSProperties }) {
   const { hidden, toggle, peek } = usePrivacy();
   const { t } = useI18n();
   const timer = useRef<number | undefined>(undefined);
@@ -41,6 +41,7 @@ export function PrivacyButton({ className = '' }: { className?: string }) {
         toggle();
       }}
       className={`press grid size-11 place-items-center rounded-full ${className}`}
+      style={style}
     >
       {hidden ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
     </button>

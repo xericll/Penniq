@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#EFEADF" />
+    <meta name="theme-color" content="#F5EBE3" />
     <meta name="color-scheme" content="dark light" />
     <title>Penniq</title>
     <meta name="description" content="Penniq — كل قرش بحسابه. محفظة الكاش والبنك وتتبع المصاريف بعملتك." />
@@ -29,7 +29,7 @@
           };
           // Page colour (--bg) of every appearance in src/index.css.
           var BG = {
-            parchment: '#EFEADF', navy: '#1A2030', olive: '#33341F',
+            terracotta: '#F5EBE3', parchment: '#EFEADF', navy: '#1A2030', olive: '#33341F',
             shore: '#E4E4E1', gilt: '#F4EFDF', azure: '#EAF2F9', clouds: '#FCF1E7', dusk: '#F1E8E1', velvet: '#F1EAEB',
             tide: '#0E2931', koi: '#101A2C', shoal: '#161F33', deep: '#0E1F45', whale: '#182231', noir: '#0B0A12'
           };
@@ -41,7 +41,7 @@
           if (pref === 'auto') {
             var host = root.getAttribute('data-theme');
             var dark = host === 'dark' || (host !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-            resolved = dark ? 'navy' : 'parchment';
+            resolved = dark ? 'navy' : 'terracotta';
           }
           root.dataset.edition = resolved;
           var meta = document.querySelector('meta[name="theme-color"]');

@@ -4,7 +4,7 @@
 
 import type { Transaction } from '../types';
 import { resolveCategory, type Category, type CategoryId } from './categories';
-import { categoryBreakdown, flowBetween, isFlow, roundMoney, startOfMonth } from './ledger';
+import { addDays, categoryBreakdown, dayKey, flowBetween, isFlow, roundMoney, startOfMonth, startOfWeek } from './ledger';
 
 export interface Leak {
   /** The description as stored (shown through localize()). */
@@ -23,6 +23,19 @@ export interface LeakReport {
   lastMonthSameDays: number;
   /** The top category's spending over the same days of last month. */
   topLastMonth: number;
+}
+
+/** Spending on each day of the current week, from its first day to its last (the Home leak chart). */
+export function weekSpending(transactions: Transaction[], weekStartsOn: number, now = new Date()): { date: Date; amount: number }[] {
+  const start = startOfWeek(now, weekStartsOn);
+  const days = Array.from({ length: 7 }, (_, i) => ({ date: addDays(start, i), amount: 0 }));
+  const index = new Map(days.map((d, i) => [dayKey(d.date), i]));
+  for (const tx of transactions) {
+    if (tx.type !== 'expense' || !isFlow(tx)) continue;
+    const i = index.get(dayKey(new Date(tx.timestamp)));
+    if (i !== undefined) days[i].amount = roundMoney(days[i].amount + (Number(tx.amount) || 0));
+  }
+  return days;
 }
 
 const key = (reason: string) => reason.split(' — ')[0].trim().toLocaleLowerCase();

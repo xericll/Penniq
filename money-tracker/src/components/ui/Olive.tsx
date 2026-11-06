@@ -209,7 +209,8 @@ export function OliveBranch({ kind, className = '', style, mirror = false }: Oli
         {spec.olives.map((t, k) => {
           const [x, y] = bezier(p, t);
           return (
-            <g key={`o${k}`} className="grow" style={{ '--g': spec.leaves + 1 + k } as CSSProperties}>
+            // Appearances without fruit (leaves only) set --fruit-opacity to 0.
+            <g key={`o${k}`} className="grow" style={{ '--g': spec.leaves + 1 + k, opacity: 'var(--fruit-opacity, 1)' } as CSSProperties}>
               <path d={`M${x.toFixed(1)} ${y.toFixed(1)}q2 8 -1 14`} style={{ stroke: 'var(--stem)' }} strokeWidth={1} fill="none" />
               <ellipse
                 cx={x - 1.5}

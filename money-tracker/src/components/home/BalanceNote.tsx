@@ -3,17 +3,28 @@ import { useRef, type PointerEvent } from 'react';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import { useI18n } from '../../i18n/LanguageContext';
 import { useWallet } from '../../state/WalletContext';
-import { Guilloche } from '../ui/Engraving';
-import { Mark } from '../ui/Logo';
-import { Garland } from '../ui/Olive';
+import { Flow, FLOW_PINCH, Spark } from '../ui/Flow';
 import { Money, Odometer } from '../ui/Money';
 import { PrivacyButton } from './PrivacyButton';
 import { PulseChips } from './PulseChips';
 
+/** Small sparks [left %, top %, size px] and star dots [left %, top %] around the Flow, as placed in the design. */
+const SPARKS: [number, number, number][] = [
+  [5.5, 30, 12],
+  [32.5, 37, 10],
+  [36, 53, 9],
+];
+const DOTS: [number, number][] = [
+  [11.5, 34],
+  [15.5, 21],
+  [27, 19],
+  [24, 45],
+];
+
 /**
- * The hero: the total balance printed like a banknote — guilloché rosettes,
- * an olive garland inside the edge, serial number and a watermark of the mark.
- * A band of gold light crosses it now and then; it tilts towards the pointer.
+ * The hero: the total balance on a banknote — the Flow ribbon pinching into a spark,
+ * a serial number and the cash / bank split. A band of light crosses it now and then;
+ * it tilts towards the pointer.
  */
 export function BalanceNote({ monthNet }: { monthNet: number }) {
   const { t, money } = useI18n();
@@ -61,7 +72,7 @@ export function BalanceNote({ monthNet }: { monthNet: number }) {
     el.style.setProperty('--glare', '0');
   };
 
-  const split = 'color-mix(in oklab, var(--note-ink) 55%, transparent)';
+  const split = 'color-mix(in oklab, var(--note-ink) 90%, var(--note-bg))';
 
   return (
     <motion.div
@@ -96,62 +107,68 @@ export function BalanceNote({ monthNet }: { monthNet: number }) {
             }}
           />
         )}
-        {/* Engraving */}
-        <Guilloche className="absolute -top-20 -end-24 -z-10 size-[300px] text-note-foil opacity-[0.24]" spin />
-        <Guilloche className="absolute -bottom-36 -start-32 -z-10 size-[240px] text-note-foil opacity-[0.08]" density="light" />
-        <span className="pointer-events-none absolute end-6 bottom-16 -z-10 opacity-[0.09]" aria-hidden>
-          <Mark size={70} color="var(--note-foil)" />
+        {/* The Flow fans in from the edge and pinches into the large spark; small sparks around it.
+            Drawn from the left as in the design, mirrored for left-to-right languages. */}
+        <span className="pointer-events-none absolute inset-0 -z-10 ltr:-scale-x-100" aria-hidden>
+          <Flow className="absolute inset-0 size-full text-note-ink" />
+          <Spark
+            size={34}
+            className="absolute -translate-x-1/2 -translate-y-1/2 text-note-ink"
+            style={{
+              left: `${FLOW_PINCH.x / 10}%`,
+              top: `${FLOW_PINCH.y / 5}%`,
+              filter: 'drop-shadow(0 0 6px color-mix(in oklab, var(--note-ink) 70%, transparent))',
+            }}
+          />
+          {SPARKS.map(([x, y, s], i) => (
+            <Spark key={i} size={s} className="absolute text-note-ink opacity-80" style={{ left: `${x}%`, top: `${y}%` }} />
+          ))}
+          {DOTS.map(([x, y], i) => (
+            <span key={i} className="absolute size-[3px] rounded-full bg-note-ink opacity-60" style={{ left: `${x}%`, top: `${y}%` }} />
+          ))}
         </span>
-        <Garland className="text-note-foil opacity-55" />
         <span className="note-sheen" aria-hidden />
         <span className="note-glare" aria-hidden />
 
-        <div className="relative px-6 pt-6 pb-5">
-          <div className="flex items-center gap-3">
-            <h2 id="note-title" className="eyebrow !text-note-ink-2">
+        <div className="relative px-6 pt-5 pb-5">
+          <div className="flex items-center gap-2.5">
+            <h2 id="note-title" className="text-[16px] font-medium text-note-ink">
               {t('home.total')}
             </h2>
-            <span className="serial ms-auto text-note-ink-2/80" dir="ltr">
-              № {serial} · {year}
+            <span className="size-1.5 shrink-0 rounded-full bg-note-ink" aria-hidden />
+            <span className="font-display text-[15px] text-note-ink-2 tabular" dir="ltr">
+              {year} - {serial}
             </span>
-            <PrivacyButton className="-me-2 text-note-ink-2 hover:bg-white/5 hover:text-note-ink" />
+            <PrivacyButton
+              className="ms-auto -me-1 !size-10 text-note-ink"
+              style={{ background: 'color-mix(in oklab, var(--note-ink) 24%, transparent)' }}
+            />
           </div>
 
-          <div className="relative mt-1">
+          <div className="relative mt-2">
             <Odometer
               value={balances.total}
               className={`font-display leading-[1.1] font-normal ${size}`}
-              decimalsClassName="text-[0.5em] text-note-ink-2 ms-0.5"
-              currencyClassName="text-[0.5em] text-note-foil mx-1.5"
+              decimalsClassName="text-[0.55em] text-note-ink ms-0.5"
+              currencyClassName="text-[0.55em] text-note-ink mx-1.5"
             />
             <PulseChips pulses={totalPulses} className="-top-3 end-0" />
           </div>
 
-          <div className="mt-2 flex items-center gap-2 text-[13px]">
+          <div className="mt-3 flex items-center gap-3 text-[14px]">
             <span
-              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1"
-              style={{
-                background:
-                  monthNet >= 0 ? 'color-mix(in oklab, var(--in) 22%, transparent)' : 'color-mix(in oklab, var(--out) 22%, transparent)',
-                color:
-                  monthNet >= 0
-                    ? 'color-mix(in oklab, var(--in) 45%, var(--note-ink))'
-                    : 'color-mix(in oklab, var(--out) 45%, var(--note-ink))',
-              }}
+              className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5"
+              style={{ background: 'var(--note-chip)', color: 'var(--note-chip-ink)' }}
             >
-              {monthNet >= 0 ? <TrendingUp className="size-3.5" aria-hidden /> : <TrendingDown className="size-3.5" aria-hidden />}
-              <Money value={monthNet} sign className="font-semibold" />
+              {monthNet >= 0 ? <TrendingUp className="size-4" aria-hidden /> : <TrendingDown className="size-4" aria-hidden />}
+              <Money value={monthNet} sign className="font-display text-[15px]" />
             </span>
-            <span className="text-note-ink-2">{t('home.monthNet')}</span>
+            <span className="text-note-ink">{t('home.monthNet')}</span>
           </div>
 
-          {/* Cash / bank split — a two-tone bar like the note's security thread */}
+          {/* Cash / bank split */}
           <div className="mt-6">
-            <div
-              className="flex h-1.5 overflow-hidden rounded-full"
-              style={{ background: 'color-mix(in oklab, var(--note-ink) 12%, transparent)' }}
-              aria-hidden
-            >
+            <div className="flex h-2 gap-0.5 overflow-hidden rounded-full" style={{ background: split }} aria-hidden>
               <motion.span
                 className="h-full rounded-full"
                 style={{ background: 'var(--note-foil)' }}
@@ -159,18 +176,17 @@ export function BalanceNote({ monthNet }: { monthNet: number }) {
                 animate={{ width: `${sum > 0 ? cashShare * 100 : 0}%` }}
                 transition={{ type: 'spring', stiffness: 60, damping: 18, delay: reduced ? 0 : 0.9 }}
               />
-              <span className="h-full flex-1" style={{ background: sum > 0 ? split : 'transparent' }} />
             </div>
-            <div className="mt-2.5 flex items-center justify-between text-[13px]">
-              <span className="flex items-center gap-1.5">
+            <div className="mt-3 flex items-center justify-between text-[14px]">
+              <span className="flex items-center gap-2">
                 <span className="size-2 rounded-full" style={{ background: 'var(--note-foil)' }} aria-hidden />
-                <span className="text-note-ink-2">{t('common.cash')}</span>
-                <Money value={balances.cash} className="font-medium" />
+                <span className="text-note-ink">{t('common.cash')}</span>
+                <Money value={balances.cash} className="font-display text-[16px]" />
               </span>
-              <span className="flex items-center gap-1.5">
+              <span className="flex items-center gap-2">
                 <span className="size-2 rounded-full" style={{ background: split }} aria-hidden />
-                <span className="text-note-ink-2">{t('common.bank')}</span>
-                <Money value={balances.bank} className="font-medium" />
+                <span className="text-note-ink">{t('common.bank')}</span>
+                <Money value={balances.bank} className="font-display text-[16px]" />
               </span>
             </div>
           </div>

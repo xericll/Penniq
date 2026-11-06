@@ -3,6 +3,7 @@ import type { TranslationKey } from '../i18n/translations';
 import { KEYS, read, write } from '../lib/storage';
 
 export type EditionId =
+  | 'terracotta'
   | 'parchment'
   | 'navy'
   | 'olive'
@@ -28,10 +29,11 @@ export interface Edition {
 }
 
 /**
- * The three appearances of the Penniq brand (parchment, Ledger Navy, olive), then twelve built from
+ * Terracotta (the November 2026 design, the default by day), the three appearances of the Penniq brand (parchment, Ledger Navy, olive), then twelve built from
  * reference palettes: one colour family, one accent, one neutral each. Light ones first, then dark.
  */
 export const EDITIONS: Edition[] = [
+  { id: 'terracotta', labelKey: 'theme.terracotta', dark: false },
   { id: 'parchment', labelKey: 'theme.parchment', dark: false },
   { id: 'navy', labelKey: 'theme.navy', dark: true },
   { id: 'olive', labelKey: 'theme.olive', dark: true },
@@ -50,7 +52,7 @@ export const EDITIONS: Edition[] = [
 ];
 
 /** What "auto" resolves to. */
-export const AUTO_EDITIONS: { dark: EditionId; light: EditionId } = { dark: 'navy', light: 'parchment' };
+export const AUTO_EDITIONS: { dark: EditionId; light: EditionId } = { dark: 'navy', light: 'terracotta' };
 
 /** Theme ids saved by other versions of the app, mapped onto the closest appearance. */
 const LEGACY: Record<string, EditionId> = {
