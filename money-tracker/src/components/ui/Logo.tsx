@@ -1,65 +1,60 @@
-import { DESCRIPTOR, STACKED, SYMBOL, WORDMARK } from './brandArt';
+import { useId, useMemo } from 'react';
+import LOGO_SVG from '../../assets/brand/penniq-logo.svg?raw';
+import MONOGRAM_SVG from '../../assets/brand/penniq-monogram.svg?raw';
+
+/*
+ * The Penniq logo from the brand folder (Penniq_Logo_Tight_Transparent.pdf and
+ * Penniq_Monogram_Tight_Transparent.pdf), converted path for path to SVG: never redraw it
+ * or retype the name. The navy wordmark and tagline follow the text colour, so the logo
+ * reads on every appearance; the coin, leaves and vine keep their own colours.
+ */
+
+/** Width ÷ height of each artwork's viewBox. */
+const ratio = (svg: string) => {
+  const [, , w, h] = svg
+    .match(/viewBox="([^"]+)"/)![1]
+    .split(' ')
+    .map(Number);
+  return w / h;
+};
+export const LOGO_RATIO = ratio(LOGO_SVG);
+export const MONOGRAM_RATIO = ratio(MONOGRAM_SVG);
+export { LOGO_SVG, MONOGRAM_SVG };
+
+/** The artwork with its ids made unique to this copy, so several copies on one page never share gradients. */
+function Art({ svg, height, color, className = '' }: { svg: string; height: number; color?: string; className?: string }) {
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
+  const html = useMemo(
+    () =>
+      svg
+        .replace(/id="(p[lm][gc]\d+)"/g, `id="$1${uid}"`)
+        .replace(/url\(#(p[lm][gc]\d+)\)/g, `url(#$1${uid})`)
+        .replace('<svg ', `<svg width="100%" height="100%" `),
+    [svg, uid],
+  );
+  return (
+    <span
+      className={`inline-block shrink-0 ${className}`}
+      style={{ height, width: height * ratio(svg), color: color ?? 'var(--ink)' }}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
 
 interface LogoProps {
-  /** 'mark' = the symbol alone, 'full' = symbol beside the wordmark, 'stacked' = the primary lockup with «محفظتك.». */
+  /** 'mark' = the monogram alone, 'full' and 'stacked' = the logo with its tagline. */
   variant?: 'full' | 'mark' | 'stacked';
-  /** Height in px: of the symbol for 'mark' and 'full', of the whole lockup for 'stacked'. */
+  /** Height in px of the monogram for 'mark' and of the logo row for 'full'; 'stacked' is drawn larger. */
   size: number;
   className?: string;
-  /** One solid colour for every part (watermarks, single-colour versions). */
+  /** Colour of the wordmark and tagline. Defaults to the ink colour. */
   color?: string;
-  /** Colour of the cradle and the wordmark; the coin stays gold. Defaults to the ink colour. */
   ink?: string;
 }
 
-/** The Penniq symbol: a coin held by an open hand. Master artwork, never redrawn. */
+/** The monogram: the P with the olive coin and leaves. */
 export function Mark({ size, color, ink, className = '' }: { size: number; color?: string; ink?: string; className?: string }) {
-  const width = (size * SYMBOL.width) / SYMBOL.height;
-  return (
-    <svg
-      viewBox={`0 0 ${SYMBOL.width} ${SYMBOL.height}`}
-      width={width}
-      height={size}
-      aria-hidden
-      focusable="false"
-      className={`shrink-0 ${className}`}
-    >
-      <path d={SYMBOL.coin} fill={color ?? 'var(--coin)'} />
-      <path d={SYMBOL.cradle} fill={color ?? ink ?? 'var(--ink)'} />
-    </svg>
-  );
-}
-
-/** The wordmark alone, as outlined artwork (the name is never retyped). */
-export function Wordmark({ height, color }: { height: number; color?: string }) {
-  return (
-    <svg
-      viewBox={`0 0 ${WORDMARK.width} ${WORDMARK.height}`}
-      width={(height * WORDMARK.width) / WORDMARK.height}
-      height={height}
-      aria-hidden
-      focusable="false"
-      className="shrink-0"
-    >
-      <path d={WORDMARK.d} fill={color ?? 'currentColor'} />
-    </svg>
-  );
-}
-
-/** «محفظتك.», the descriptor set under the wordmark. */
-export function Descriptor({ height, color }: { height: number; color?: string }) {
-  return (
-    <svg
-      viewBox={`0 0 ${DESCRIPTOR.width} ${DESCRIPTOR.height}`}
-      width={(height * DESCRIPTOR.width) / DESCRIPTOR.height}
-      height={height}
-      aria-hidden
-      focusable="false"
-      className="shrink-0"
-    >
-      <path d={DESCRIPTOR.d} fill={color ?? 'currentColor'} />
-    </svg>
-  );
+  return <Art svg={MONOGRAM_SVG} height={size} color={color ?? ink} className={className} />;
 }
 
 export function Logo({ variant = 'full', size, className = '', color, ink }: LogoProps) {
@@ -70,33 +65,11 @@ export function Logo({ variant = 'full', size, className = '', color, ink }: Log
       </span>
     );
   }
-  if (variant === 'stacked') {
-    return (
-      <span role="img" aria-label="Penniq — محفظتك" className={`inline-flex ${className}`}>
-        <svg
-          viewBox={`0 0 ${STACKED.width} ${STACKED.height}`}
-          width={(size * STACKED.width) / STACKED.height}
-          height={size}
-          aria-hidden
-          focusable="false"
-        >
-          <path d={STACKED.coin} fill={color ?? 'var(--coin)'} />
-          <g fill={color ?? ink ?? 'var(--ink)'}>
-            <path d={STACKED.cradle} />
-            <path d={STACKED.word} />
-            <path d={STACKED.desc} />
-          </g>
-        </svg>
-      </span>
-    );
-  }
-  // Horizontal lockup (guideline p.15): the wordmark's cap height sits level with the symbol.
+  // The logo is wide and low: 'full' sits in a row of the given height, 'stacked' is the large lockup.
+  const height = variant === 'stacked' ? size * 0.85 : size * 1.6;
   return (
-    <span role="img" aria-label="Penniq" dir="ltr" className={`inline-flex items-center ${className}`} style={{ gap: size * 0.28 }}>
-      <Mark size={size} color={color} ink={ink} />
-      <span style={{ color: color ?? ink ?? 'var(--ink)', marginTop: size * 0.22 }}>
-        <Wordmark height={size * 1.02} />
-      </span>
+    <span role="img" aria-label="Penniq" dir="ltr" className={`inline-flex ${className}`}>
+      <Art svg={LOGO_SVG} height={height} color={color ?? ink} />
     </span>
   );
 }

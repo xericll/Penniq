@@ -60,7 +60,7 @@ export function Home({
     <div className="relative isolate space-y-4">
       <header className="relative z-10">
         <div className="flex h-11 items-center justify-between">
-          <Logo variant="mark" size={24} className="lg:invisible" />
+          <Logo variant="mark" size={36} className="lg:invisible" />
           <AssistantButton onClick={onAssistant} />
         </div>
         <h1 className="mt-1.5 text-[32px] leading-[1.25] font-bold lg:text-[40px]">

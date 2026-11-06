@@ -1,7 +1,7 @@
 /* Draws a shareable achievement card in Penniq's brand look — Ledger Navy paper, coin gold,
    guilloché rosettes and a beaded frame — on a canvas, in story (1080×1920) or square (1080×1080). */
 
-import { SYMBOL, WORDMARK } from '../components/ui/brandArt';
+import { LOGO_RATIO, LOGO_SVG, MONOGRAM_RATIO, MONOGRAM_SVG } from '../components/ui/Logo';
 
 export interface CardContent {
   /** The big figure: "20%", a level number, "✓". */
@@ -75,6 +75,11 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): st
   }
   if (line) lines.push(line);
   return lines;
+}
+
+/** The logo artwork as an image, its wordmark in the given colour. */
+function artImage(svg: string, color: string): Promise<HTMLImageElement | null> {
+  return loadImage(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.replace(/currentColor/g, color))}`);
 }
 
 async function loadImage(src: string): Promise<HTMLImageElement | null> {
@@ -169,14 +174,11 @@ export async function drawAchievement(content: CardContent, format: 'story' | 's
     ctx.drawImage(photo, cx - r + 10, y - r + 10, (r - 10) * 2, (r - 10) * 2);
     ctx.restore();
   } else {
-    const s = (r * 1.15) / SYMBOL.width;
-    ctx.save();
-    ctx.translate(cx - (SYMBOL.width * s) / 2, y - (SYMBOL.height * s) / 2);
-    ctx.scale(s, s);
-    ctx.fillStyle = NAVY;
-    ctx.fill(new Path2D(SYMBOL.coin));
-    ctx.fill(new Path2D(SYMBOL.cradle));
-    ctx.restore();
+    const mono = await artImage(MONOGRAM_SVG, NAVY);
+    if (mono) {
+      const h = r * 1.3;
+      ctx.drawImage(mono, cx - (h * MONOGRAM_RATIO) / 2, y - h / 2, h * MONOGRAM_RATIO, h);
+    }
   }
   ctx.strokeStyle = 'rgba(255,255,255,0.35)';
   ctx.lineWidth = 3;
@@ -212,27 +214,11 @@ export async function drawAchievement(content: CardContent, format: 'story' | 's
     }
   }
 
-  // Footer: the mark and the outlined wordmark, then the link
+  // Footer: the logo with its wordmark in parchment, then the link
   const footY = H - m - (story ? 150 : 110);
-  const markH = story ? 54 : 44;
-  const ms = markH / SYMBOL.height;
-  const ws = (markH * 0.62) / WORDMARK.height;
-  const total = SYMBOL.width * ms + 18 + WORDMARK.width * ws;
-  const x0 = cx - total / 2;
-  ctx.save();
-  ctx.translate(x0, footY - markH);
-  ctx.scale(ms, ms);
-  ctx.fillStyle = GOLD;
-  ctx.fill(new Path2D(SYMBOL.coin));
-  ctx.fillStyle = PARCHMENT;
-  ctx.fill(new Path2D(SYMBOL.cradle));
-  ctx.restore();
-  ctx.save();
-  ctx.translate(x0 + SYMBOL.width * ms + 18, footY - markH * 0.8);
-  ctx.scale(ws, ws);
-  ctx.fillStyle = PARCHMENT;
-  ctx.fill(new Path2D(WORDMARK.d));
-  ctx.restore();
+  const logoH = story ? 110 : 88;
+  const logo = await artImage(LOGO_SVG, PARCHMENT);
+  if (logo) ctx.drawImage(logo, cx - (logoH * LOGO_RATIO) / 2, footY - logoH + 14, logoH * LOGO_RATIO, logoH);
   ctx.fillStyle = PARCHMENT_2;
   ctx.font = `500 ${story ? 32 : 28}px ${SANS}`;
   ctx.direction = 'ltr';

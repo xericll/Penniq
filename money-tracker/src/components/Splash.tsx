@@ -2,23 +2,15 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { useI18n } from '../i18n/LanguageContext';
 import { SPLASH_MS, SPLASH_ON_LOAD } from '../lib/boot';
-import { DESCRIPTOR, SYMBOL, WORDMARK } from './ui/brandArt';
+import { Logo } from './ui/Logo';
 
-/* The splash keeps the guideline's own colours whatever appearance the app is in. */
+/* The splash wears the logo's own colours, whatever appearance the app is in. */
+const CREAM = '#f5f0e5';
 const NAVY = '#1f2635';
-const PARCHMENT = '#efeadf';
-const GOLD = '#c2a97d';
-const SLATE = '#5a6478';
+const GOLD = '#a8875a';
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-/** Rising arcs: three cradles layered in navy tones (guideline, "Patterns — Rising Arcs"). */
-const ARCS = [
-  { d: 'M0 90 C 60 290, 330 320, 400 40 L 400 300 L 0 300 Z', opacity: 0.3 },
-  { d: 'M0 150 C 80 300, 320 300, 400 110 L 400 300 L 0 300 Z', opacity: 0.42 },
-  { d: 'M0 215 C 100 310, 300 310, 400 190 L 400 300 L 0 300 Z', opacity: 0.6 },
-];
-
-/** Launch moment: the arcs rise, the coin drops into the open hand, then the name is unveiled. */
+/** Launch moment: a soft gold light rises, the logo is unveiled left to right as if the vine grows, then the tagline. */
 export function Splash() {
   const { t, lang } = useI18n();
   const [visible, setVisible] = useState(SPLASH_ON_LOAD);
@@ -35,84 +27,39 @@ export function Splash() {
     return () => window.clearTimeout(id);
   }, [visible]);
 
-  const wipe = (delay: number) => ({
-    initial: { clipPath: 'inset(100% 0 0 0)', y: 18 },
-    animate: { clipPath: 'inset(-10% 0 -10% 0)', y: 0 },
-    transition: { duration: 0.8, delay, ease: EASE },
-  });
-
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden text-center"
-          style={{ background: NAVY, color: PARCHMENT }}
-          exit={{ opacity: 0, transition: { duration: 0.4, ease: 'easeOut' } }}
+          style={{ background: CREAM, color: NAVY }}
+          exit={{ opacity: 0, transition: { duration: 0.45, ease: 'easeOut' } }}
           onClick={() => setVisible(false)}
           aria-hidden
         >
-          <svg
-            viewBox="0 0 400 300"
-            preserveAspectRatio="none"
-            className="absolute inset-x-[-10%] bottom-[-2%] h-[38%] w-[120%]"
-            style={{ color: SLATE }}
-          >
-            {ARCS.map((a, i) => (
-              <motion.path
-                key={i}
-                d={a.d}
-                fill="currentColor"
-                fillOpacity={a.opacity}
-                initial={{ y: 300 }}
-                animate={{ y: 0 }}
-                transition={{ duration: 1.2, delay: i * 0.12, ease: EASE }}
-              />
-            ))}
-          </svg>
+          {/* Gold light behind the logo */}
+          <motion.span
+            className="pointer-events-none absolute top-1/2 left-1/2 size-[520px] -translate-x-1/2 -translate-y-[58%] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(205,182,140,0.42) 0%, rgba(205,182,140,0) 62%)' }}
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.4, ease: EASE }}
+          />
 
-          <div className="relative -mt-16 flex flex-col items-center">
-            <svg viewBox={`0 0 ${SYMBOL.width} ${SYMBOL.height}`} width={136} height={85} className="overflow-visible">
-              <motion.path
-                d={SYMBOL.cradle}
-                fill={PARCHMENT}
-                style={{ transformBox: 'fill-box', transformOrigin: '50% 70%' }}
-                initial={{ rotate: -18, scale: 0.6, opacity: 0 }}
-                animate={{ rotate: 0, scale: 1, opacity: 1 }}
-                transition={{ type: 'spring', stiffness: 170, damping: 14, delay: 0.1 }}
-              />
-              <motion.path
-                d={SYMBOL.coin}
-                fill={GOLD}
-                initial={{ y: -520 }}
-                animate={{ y: [-520, 12, -26, 4, 0] }}
-                transition={{ duration: 1.1, delay: 0.3, times: [0, 0.55, 0.7, 0.84, 1], ease: 'easeIn' }}
-              />
-            </svg>
-
-            <motion.svg
-              viewBox={`0 0 ${WORDMARK.width} ${WORDMARK.height}`}
-              width={190}
-              height={(190 * WORDMARK.height) / WORDMARK.width}
-              className="mt-6"
-              {...wipe(0.95)}
+          <div className="relative -mt-10 flex flex-col items-center">
+            <motion.div
+              initial={{ clipPath: 'inset(0 100% 0 0)', y: 10, scale: 0.97 }}
+              animate={{ clipPath: 'inset(-12% -4% -12% -4%)', y: 0, scale: 1 }}
+              transition={{ duration: 1, delay: 0.05, ease: EASE }}
             >
-              <path d={WORDMARK.d} fill={PARCHMENT} />
-            </motion.svg>
-            <motion.svg
-              viewBox={`0 0 ${DESCRIPTOR.width} ${DESCRIPTOR.height}`}
-              width={88}
-              height={(88 * DESCRIPTOR.height) / DESCRIPTOR.width}
-              className="mt-3"
-              {...wipe(1.15)}
-            >
-              <path d={DESCRIPTOR.d} fill={PARCHMENT} />
-            </motion.svg>
+              <Logo size={128} variant="stacked" color={NAVY} />
+            </motion.div>
 
             <motion.p
-              className="font-display mt-12 text-[30px] leading-tight"
+              className="font-display mt-10 text-[28px] leading-tight"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 1.35, ease: EASE }}
+              transition={{ duration: 0.6, delay: 0.85, ease: EASE }}
             >
               {t('app.tagline')}
             </motion.p>
@@ -124,7 +71,7 @@ export function Splash() {
                 style={{ color: GOLD }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 1.55 }}
+                transition={{ duration: 0.7, delay: 1.05 }}
               >
                 Every penny, accounted for.
               </motion.p>
