@@ -22,8 +22,13 @@ export interface Recurring {
   month?: number;
   /** Remind this many days before (0 = on the day). */
   remindBefore: number;
-  /** "YYYY-MM-DD" → id of the entry that recorded that occurrence. */
+  /** "YYYY-MM-DD" → id of the entry that recorded that occurrence ('' = skipped: its automatic entry was undone). */
   paid: Record<string, string>;
+  /** Recorded by itself from its account when its date comes (while the app is open, or on the next open). */
+  autoPay: boolean;
+  /** "YYYY-MM-DD" from which dates are recorded automatically; set the first time the app sees the payment, so
+      older dates are never filled in after the fact. */
+  autoSince?: string;
   createdAt: string;
 }
 
@@ -91,6 +96,27 @@ export function recurringEntry(item: Recurring, date: Date) {
   } as const;
 }
 
+/** Most dates of one payment recorded in one go (a long time away from the app). */
+const MAX_CATCH_UP = 12;
+
+/** Dates of automatic payments that have come and are not recorded (or skipped) yet, oldest first. */
+export function dueForAutoPay(items: Recurring[], now = new Date()): Occurrence[] {
+  const today = startOfDay(now);
+  return items
+    .flatMap((item) => {
+      if (!item.autoPay || !item.autoSince) return [];
+      const since = new Date(`${item.autoSince}T00:00`);
+      const created = startOfDay(new Date(item.createdAt));
+      const from = since > created ? since : created;
+      if (Number.isNaN(from.getTime()) || from > today) return [];
+      return occurrencesBetween(item, from, today)
+        .map((date) => ({ item, date, key: dayKey(date) }))
+        .filter((o) => !(o.key in item.paid))
+        .slice(-MAX_CATCH_UP);
+    })
+    .sort((a, b) => a.date.getTime() - b.date.getTime());
+}
+
 export function parseRecurring(v: unknown): Recurring[] {
   if (!Array.isArray(v)) return [];
   const out: Recurring[] = [];
@@ -118,6 +144,8 @@ export function parseRecurring(v: unknown): Recurring[] {
       month: frequency === 'yearly' ? Math.min(11, Math.max(0, Math.round(Number(x.month)) || 0)) : undefined,
       remindBefore: [0, 1, 2, 3, 7].includes(Number(x.remindBefore)) ? Number(x.remindBefore) : 1,
       paid,
+      autoPay: x.autoPay !== false,
+      autoSince: typeof x.autoSince === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x.autoSince) ? x.autoSince : undefined,
       createdAt: typeof x.createdAt === 'string' ? x.createdAt : new Date().toISOString(),
     });
   }

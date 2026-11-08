@@ -14,6 +14,7 @@ import { AmountField } from '../ui/AmountField';
 import { Money } from '../ui/Money';
 import { AccountPicker, CategoryGrid, TextField, TypePicker, parseNumber } from '../ui/Pickers';
 import { Segmented } from '../ui/Segmented';
+import { Switch } from '../ui/Switch';
 import { Sheet } from '../ui/Sheet';
 import { useRecordOccurrence } from './QuickRecord';
 
@@ -264,6 +265,7 @@ function RecurringEditor({ open, item, onClose }: { open: boolean; item: Recurri
   const [day, setDay] = useState(1);
   const [yearDate, setYearDate] = useState('');
   const [remind, setRemind] = useState('1');
+  const [autoPay, setAutoPay] = useState(true);
   const [errors, setErrors] = useState<{ name?: string; amount?: string }>({});
 
   useEffect(() => {
@@ -280,6 +282,7 @@ function RecurringEditor({ open, item, onClose }: { open: boolean; item: Recurri
     const d = item?.frequency === 'yearly' ? item.day : now.getDate();
     setYearDate(`${now.getFullYear()}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`);
     setRemind(String(item?.remindBefore ?? 1));
+    setAutoPay(item?.autoPay ?? true);
     setErrors({});
   }, [open, item]);
 
@@ -303,6 +306,9 @@ function RecurringEditor({ open, item, onClose }: { open: boolean; item: Recurri
       month: frequency === 'yearly' ? (Number.isNaN(yd.getTime()) ? 0 : yd.getMonth()) : undefined,
       remindBefore: Number(remind),
       paid: item?.paid ?? {},
+      autoPay,
+      // Switched on now: dates from today on, never the ones already gone by.
+      autoSince: autoPay ? (item?.autoPay && item.autoSince ? item.autoSince : dayKey(new Date())) : undefined,
       createdAt: item?.createdAt ?? new Date().toISOString(),
     };
     setRecurring(item ? recurring.map((r) => (r.id === item.id ? next : r)) : [...recurring, next]);
@@ -413,6 +419,22 @@ function RecurringEditor({ open, item, onClose }: { open: boolean; item: Recurri
         )}
         <AccountPicker value={account} onChange={setAccount} />
         {type === 'expense' && <CategoryGrid value={category} onChange={setCategory} />}
+        <button
+          type="button"
+          role="switch"
+          aria-checked={autoPay}
+          onClick={() => {
+            haptic('select');
+            setAutoPay((v) => !v);
+          }}
+          className="press flex w-full items-center gap-3 rounded-2xl border border-line-strong px-4 py-3 text-start hover:bg-surface-2"
+        >
+          <span className="min-w-0 flex-1">
+            <span className="block text-[15px] font-medium">{t(type === 'income' ? 'recurring.autoIncome' : 'recurring.auto')}</span>
+            <span className="mt-0.5 block text-[13px] leading-snug text-ink-3">{t('recurring.autoHint')}</span>
+          </span>
+          <Switch on={autoPay} />
+        </button>
         <div>
           <span className="eyebrow mb-2 block">{t('recurring.remind')}</span>
           <Segmented
