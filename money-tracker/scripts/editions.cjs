@@ -18,11 +18,12 @@ const T = [
   // The banknote and buttons are a deeper jade so their text is white (the user asked for white text); mint lights the threads and accents.
   { id: 'shavin', ar: 'شافين', de: 'Shavin', en: 'Shavin', dark: true, bg: '#0f1a15', surface: '#16241d', ink: '#eef6ef',
     note: '#3f7a5a', note2: '#2f6448', noteHi: '#4f8e6b', noteInk: '#f4fbf5', noteFoil: '#c6e9c8', noteBank: '#c6e9c8', chip: '#2a5640', chipInk: '#e6f6e7',
-    coin: '#3f7a5a', onCoin: '#f4fbf5', dock: '#0a120e', navOn: '#c6e9c8', cash: '#61a07d', bank: '#c6e9c8', leaf: '#61a07d', inc: '#9fd8b0', out: '#f0937a' },
+    coin: '#61a07d', onCoin: '#ffffff', primary: '#61a07d', onPrimary: '#ffffff', dock: '#c6e9c8', navInk: '#2b4a3a', navOn: '#2a5e43', cash: '#61a07d', bank: '#c6e9c8', leaf: '#61a07d', inc: '#9fd8b0', out: '#f0937a' },
+  // The main bar (dock) is mint and the buttons are jade #61A07D with white text, as the user asked (white on that jade is 3.1:1, below 4.5 for small text; the user chose it).
   // Shavin by day: the same jade banknote on a mint-tinted page.
   { id: 'pistachio', ar: 'شافين', de: 'Shavin', en: 'Shavin', bg: '#e6f3e8', surface: '#f5fbf5', ink: '#13261c',
     note: '#3f7a5a', note2: '#2f6448', noteHi: '#4f8e6b', noteInk: '#f4fbf5', noteFoil: '#c6e9c8', noteBank: '#c6e9c8', chip: '#2a5640', chipInk: '#e6f6e7',
-    coin: '#3f7a5a', onCoin: '#f4fbf5', dock: '#13261c', navOn: '#c6e9c8', cash: '#3f7a5a', bank: '#4f8a6a', leaf: '#61a07d', inc: '#2f7a4f', out: '#b0452c' },
+    coin: '#61a07d', onCoin: '#ffffff', primary: '#61a07d', onPrimary: '#ffffff', dock: '#c6e9c8', navInk: '#2b4a3a', navOn: '#2a5e43', cash: '#3f7a5a', bank: '#4f8a6a', leaf: '#61a07d', inc: '#2f7a4f', out: '#b0452c' },
   // Brand appearances
   { id: 'parchment', brand: true, bg: '#efeadf', surface: '#f8f5ee', ink: '#26271a', note: '#515233', note2: '#3f4027', noteInk: '#f3eee2', noteFoil: '#c2a97d', coin: '#c2a97d', dock: '#2a2b1b', navOn: '#d9c39a', cash: '#8a6d46', bank: '#515233', inc: '#3d6b3f', out: '#a3472f' },
   { id: 'navy', brand: true, dark: true, bg: '#1a2030', surface: '#222a3b', ink: '#efeadf', note: '#34436a', note2: '#232d47', noteInk: '#f4efe4', noteFoil: '#c2a97d', coin: '#c2a97d', dock: '#11151f', navOn: '#e2cfa6', cash: '#c2a97d', bank: '#8f9bb8', inc: '#7cb894', out: '#e3907a' },
@@ -67,8 +68,8 @@ function block(p) {
   const darkInk = d ? p.bg : p.ink;
   const lightInk = d ? p.ink : p.surface;
   // Primary buttons: the banknote colour on light pages, the coin on dark ones.
-  const primary = d ? p.coin : reach(p.note, p.note2, [p.surface], 3);
-  const onPrimary = on(primary, d ? p.bg : p.ink, '#ffffff');
+  const primary = p.primary ?? (d ? p.coin : reach(p.note, p.note2, [p.surface], 3));
+  const onPrimary = p.onPrimary ?? on(primary, d ? p.bg : p.ink, '#ffffff');
   const chip = p.chip ?? mix(p.noteInk, p.note, 0.1);
   const chipInk = p.chipInk ?? on(chip, mix(p.note2, '#000000', 0.62), p.note);
   const navInk = p.navInk ?? reach(mix(p.dock, '#ffffff', 0.62), '#ffffff', [p.dock], 4.6);
