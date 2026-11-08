@@ -18,12 +18,15 @@ const T = [
   // The banknote and buttons are a deeper jade so their text is white (the user asked for white text); mint lights the threads and accents.
   { id: 'shavin', ar: 'شافين', de: 'Shavin', en: 'Shavin', dark: true, bg: '#0f1a15', surface: '#16241d', ink: '#eef6ef',
     note: '#3f7a5a', note2: '#2f6448', noteHi: '#4f8e6b', noteInk: '#f4fbf5', noteFoil: '#c6e9c8', noteBank: '#c6e9c8', chip: '#2a5640', chipInk: '#e6f6e7',
-    coin: '#61a07d', onCoin: '#ffffff', primary: '#61a07d', onPrimary: '#ffffff', dock: '#c6e9c8', navInk: '#2b4a3a', navOn: '#2a5e43', cash: '#61a07d', bank: '#c6e9c8', leaf: '#61a07d', inc: '#9fd8b0', out: '#f0937a' },
+    coin: '#61a07d', onCoin: '#ffffff', primary: '#61a07d', onPrimary: '#ffffff', mainBtn: '#c6e9c8', onMainBtn: '#1f3d2d', mainRing: '#61a07d',
+    dock: '#c6e9c8', navInk: '#2b4a3a', navOn: '#2a5e43', cash: '#61a07d', bank: '#c6e9c8', leaf: '#61a07d', inc: '#9fd8b0', out: '#f0937a' },
   // The main bar (dock) is mint and the buttons are jade #61A07D with white text, as the user asked (white on that jade is 3.1:1, below 4.5 for small text; the user chose it).
+  // The + button in the middle of the dock is mint #C6E9C8 with a dark icon and a jade ring (the user's "main icon").
   // Shavin by day: the same jade banknote on a mint-tinted page.
   { id: 'pistachio', ar: 'شافين', de: 'Shavin', en: 'Shavin', bg: '#e6f3e8', surface: '#f5fbf5', ink: '#13261c',
     note: '#3f7a5a', note2: '#2f6448', noteHi: '#4f8e6b', noteInk: '#f4fbf5', noteFoil: '#c6e9c8', noteBank: '#c6e9c8', chip: '#2a5640', chipInk: '#e6f6e7',
-    coin: '#61a07d', onCoin: '#ffffff', primary: '#61a07d', onPrimary: '#ffffff', dock: '#c6e9c8', navInk: '#2b4a3a', navOn: '#2a5e43', cash: '#3f7a5a', bank: '#4f8a6a', leaf: '#61a07d', inc: '#2f7a4f', out: '#b0452c' },
+    coin: '#61a07d', onCoin: '#ffffff', primary: '#61a07d', onPrimary: '#ffffff', mainBtn: '#c6e9c8', onMainBtn: '#1f3d2d', mainRing: '#61a07d',
+    dock: '#c6e9c8', navInk: '#2b4a3a', navOn: '#2a5e43', cash: '#3f7a5a', bank: '#4f8a6a', leaf: '#61a07d', inc: '#2f7a4f', out: '#b0452c' },
   // Brand appearances
   { id: 'parchment', brand: true, bg: '#efeadf', surface: '#f8f5ee', ink: '#26271a', note: '#515233', note2: '#3f4027', noteInk: '#f3eee2', noteFoil: '#c2a97d', coin: '#c2a97d', dock: '#2a2b1b', navOn: '#d9c39a', cash: '#8a6d46', bank: '#515233', inc: '#3d6b3f', out: '#a3472f' },
   { id: 'navy', brand: true, dark: true, bg: '#1a2030', surface: '#222a3b', ink: '#efeadf', note: '#34436a', note2: '#232d47', noteInk: '#f4efe4', noteFoil: '#c2a97d', coin: '#c2a97d', dock: '#11151f', navOn: '#e2cfa6', cash: '#c2a97d', bank: '#8f9bb8', inc: '#7cb894', out: '#e3907a' },
@@ -98,6 +101,12 @@ function block(p) {
     '--on-coin': p.onCoin ?? on(p.coin, d ? p.bg : p.ink, '#ffffff'),
     // The ring round the transfer coin and the + button, and the filled assistant button.
     '--coin-ring': p.coinRing ?? (d ? p.bg : mix(p.surface, p.coin, 0.08)),
+    // The + button in the middle of the dock: the coin, unless the palette gives it a colour of its own.
+    '--main-btn': p.mainBtn ?? p.coin,
+    '--main-btn-hi': mix(p.mainBtn ?? p.coin, '#ffffff', 0.3),
+    '--main-btn-lo': mix(p.mainBtn ?? p.coin, '#000000', 0.12),
+    '--on-main-btn': p.onMainBtn ?? p.onCoin ?? on(p.coin, d ? p.bg : p.ink, '#ffffff'),
+    '--main-ring': p.mainRing ?? p.coinRing ?? (d ? p.bg : mix(p.surface, p.coin, 0.08)),
     '--assist-bg': p.assist ?? mix(p.surface, p.coin, d ? 0.14 : 0.12),
     // The rounded square behind the cash and bank icons.
     '--icon-tile': p.iconTile ?? mix(p.surface, p.cash, d ? 0.2 : 0.22),
@@ -140,7 +149,7 @@ function block(p) {
   };
   const checks = [
     ['ink-3/surface-2', ink3, surface2, 4.5], ['foil/surface', foil, p.surface, 4.5], ['on-primary', onPrimary, primary, 4.5],
-    ['on-coin', t['--on-coin'], p.coin, 3], ['note-ink', p.noteInk, p.note, 4.5], ['note-ink/note2', p.noteInk, p.note2, 4.5],
+    ['on-coin', t['--on-coin'], p.coin, 3], ['on-main-btn', t['--on-main-btn'], t['--main-btn'], 3], ['note-ink', p.noteInk, p.note, 4.5], ['note-ink/note2', p.noteInk, p.note2, 4.5],
     ['chip', chipInk, chip, 4.5], ['nav-ink', navInk, p.dock, 4.5], ['nav-on', p.navOn, p.dock, 4.5],
     ['in', p.inc, p.surface, 4.5], ['out', p.out, p.surface, 4.5], ['cash icon', p.cash, p.surface, 3], ['bank icon', p.bank, p.surface, 3],
   ];

@@ -98,8 +98,8 @@ export function TabBar({ tab, onTab, onNew, hidden }: NavProps & { hidden: boole
             }}
             whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.05 }}
-            className="coin relative -mt-8 grid size-[58px] place-items-center overflow-visible rounded-full"
-            style={{ boxShadow: '0 0 0 5px var(--coin-ring), 0 10px 22px -8px rgba(0,0,0,.4)' }}
+            className="coin coin-main relative -mt-8 grid size-[58px] place-items-center overflow-visible rounded-full"
+            style={{ boxShadow: '0 0 0 5px var(--main-ring), 0 10px 22px -8px rgba(0,0,0,.4)' }}
             aria-label={t('nav.new')}
           >
             {ping > 0 && <span key={ping} className="coin-ping pointer-events-none absolute inset-0 rounded-full" aria-hidden />}

@@ -75,6 +75,11 @@
   --coin-lo: #b7623a;
   --on-coin: #fff0de;
   --coin-ring: #fbe4d0;
+  --main-btn: #df7847;
+  --main-btn-hi: #e9a17e;
+  --main-btn-lo: #c46a3e;
+  --on-main-btn: #fff0de;
+  --main-ring: #fbe4d0;
   --assist-bg: #f3e0d2;
   --icon-tile: #f2d0b5;
   --in: #3d7a4f;
@@ -132,6 +137,11 @@
   --coin-lo: #9f8b67;
   --on-coin: #26271a;
   --coin-ring: #f4efe5;
+  --main-btn: #c2a97d;
+  --main-btn-hi: #d4c3a4;
+  --main-btn-lo: #ab956e;
+  --on-main-btn: #26271a;
+  --main-ring: #f4efe5;
   --assist-bg: #f2ece0;
   --icon-tile: #e0d7c9;
   --in: #3d6b3f;
@@ -189,6 +199,11 @@
   --coin-lo: #9f8b67;
   --on-coin: #1a2030;
   --coin-ring: #1a2030;
+  --main-btn: #c2a97d;
+  --main-btn-hi: #d4c3a4;
+  --main-btn-lo: #ab956e;
+  --on-main-btn: #1a2030;
+  --main-ring: #1a2030;
   --assist-bg: #383c44;
   --icon-tile: #424348;
   --in: #7cb894;
@@ -246,6 +261,11 @@
   --coin-lo: #a59068;
   --on-coin: #33341f;
   --coin-ring: #33341f;
+  --main-btn: #c9b07f;
+  --main-btn-hi: #d9c8a5;
+  --main-btn-lo: #b19b70;
+  --on-main-btn: #33341f;
+  --main-ring: #33341f;
   --assist-bg: #514f35;
   --icon-tile: #5a563a;
   --in: #a8cf9a;
@@ -303,6 +323,11 @@
   --coin-lo: #861714;
   --on-coin: #ffffff;
   --coin-ring: #efe6e5;
+  --main-btn: #a31c18;
+  --main-btn-hi: #bf605d;
+  --main-btn-lo: #8f1915;
+  --on-main-btn: #ffffff;
+  --main-ring: #efe6e5;
   --assist-bg: #ecdedc;
   --icon-tile: #c7d5d5;
   --in: #25705a;
@@ -360,6 +385,11 @@
   --coin-lo: #af935c;
   --on-coin: #101a2c;
   --coin-ring: #f8f2e5;
+  --main-btn: #d5b370;
+  --main-btn-hi: #e2ca9b;
+  --main-btn-lo: #bb9e63;
+  --on-main-btn: #101a2c;
+  --main-ring: #f8f2e5;
   --assist-bg: #f6f0e0;
   --icon-tile: #caced1;
   --in: #2f7a52;
@@ -417,6 +447,11 @@
   --coin-lo: #cb592b;
   --on-coin: #0f2552;
   --coin-ring: #f7efed;
+  --main-btn: #f76c35;
+  --main-btn-hi: #f99872;
+  --main-btn-lo: #d95f2f;
+  --on-main-btn: #0f2552;
+  --main-ring: #f7efed;
   --assist-bg: #f7e9e5;
   --icon-tile: #c7d5ec;
   --in: #22805a;
@@ -474,6 +509,11 @@
   --coin-lo: #d19d58;
   --on-coin: #10284f;
   --coin-ring: #fff5ea;
+  --main-btn: #ffbf6b;
+  --main-btn-hi: #ffd297;
+  --main-btn-lo: #e0a85e;
+  --on-main-btn: #10284f;
+  --main-ring: #fff5ea;
   --assist-bg: #fff3e4;
   --icon-tile: #cdd9eb;
   --in: #22805a;
@@ -531,6 +571,11 @@
   --coin-lo: #b88561;
   --on-coin: #1d2a38;
   --coin-ring: #f9efe8;
+  --main-btn: #e0a276;
+  --main-btn-hi: #e9be9f;
+  --main-btn-lo: #c58f68;
+  --on-main-btn: #1d2a38;
+  --main-ring: #f9efe8;
   --assist-bg: #f8ece3;
   --icon-tile: #cfd5dc;
   --in: #3a7656;
@@ -588,6 +633,11 @@
   --coin-lo: #b23734;
   --on-coin: #ffffff;
   --coin-ring: #f8eae9;
+  --main-btn: #d9433f;
+  --main-btn-hi: #e47b79;
+  --main-btn-lo: #bf3b37;
+  --on-main-btn: #ffffff;
+  --main-ring: #f8eae9;
   --assist-bg: #f7e2e2;
   --icon-tile: #dfcfd3;
   --in: #2f7a52;
@@ -645,6 +695,11 @@
   --coin-lo: #c25750;
   --on-coin: #0e2931;
   --coin-ring: #0e2931;
+  --main-btn: #ec6a62;
+  --main-btn-hi: #f29791;
+  --main-btn-lo: #d05d56;
+  --on-main-btn: #0e2931;
+  --main-ring: #0e2931;
   --assist-bg: #313e45;
   --icon-tile: #255056;
   --in: #7fd1b4;
@@ -702,6 +757,11 @@
   --coin-lo: #af935c;
   --on-coin: #101a2c;
   --coin-ring: #101a2c;
+  --main-btn: #d5b370;
+  --main-btn-hi: #e2ca9b;
+  --main-btn-lo: #bb9e63;
+  --on-main-btn: #101a2c;
+  --main-ring: #101a2c;
   --assist-bg: #323847;
   --icon-tile: #2c3d5d;
   --in: #8fd0a8;
@@ -759,6 +819,11 @@
   --coin-lo: #af9042;
   --on-coin: #161f33;
   --coin-ring: #161f33;
+  --main-btn: #d5b050;
+  --main-btn-hi: #e2c885;
+  --main-btn-lo: #bb9b46;
+  --on-main-btn: #161f33;
+  --main-ring: #161f33;
   --assist-bg: #383d46;
   --icon-tile: #34425f;
   --in: #8fd0a8;
@@ -816,6 +881,11 @@
   --coin-lo: #cb592b;
   --on-coin: #0e1f45;
   --coin-ring: #0e1f45;
+  --main-btn: #f76c35;
+  --main-btn-hi: #f99872;
+  --main-btn-lo: #d95f2f;
+  --on-main-btn: #0e1f45;
+  --main-ring: #0e1f45;
   --assist-bg: #353355;
   --icon-tile: #274575;
   --in: #8fe0b0;
@@ -873,6 +943,11 @@
   --coin-lo: #b88561;
   --on-coin: #182231;
   --coin-ring: #182231;
+  --main-btn: #e0a276;
+  --main-btn-hi: #e9be9f;
+  --main-btn-lo: #c58f68;
+  --on-main-btn: #182231;
+  --main-ring: #182231;
   --assist-bg: #3c404b;
   --icon-tile: #47474e;
   --in: #8fd6a8;
@@ -930,6 +1005,11 @@
   --coin-lo: #b23734;
   --on-coin: #0b0a12;
   --coin-ring: #0b0a12;
+  --main-btn: #d9433f;
+  --main-btn-hi: #e47b79;
+  --main-btn-lo: #bf3b37;
+  --on-main-btn: #0b0a12;
+  --main-ring: #0b0a12;
   --assist-bg: #301e2a;
   --icon-tile: #2d3243;
   --in: #8fd6a8;
@@ -987,6 +1067,11 @@
   --coin-lo: #b26247;
   --on-coin: #1f1e1d;
   --coin-ring: #1f1e1d;
+  --main-btn: #d97757;
+  --main-btn-hi: #e4a089;
+  --main-btn-lo: #bf694d;
+  --on-main-btn: #1f1e1d;
+  --main-ring: #1f1e1d;
   --assist-bg: #43342e;
   --icon-tile: #4e3c33;
   --in: #8fcb9b;
@@ -1044,6 +1129,11 @@
   --coin-lo: #508367;
   --on-coin: #ffffff;
   --coin-ring: #0f1a15;
+  --main-btn: #c6e9c8;
+  --main-btn-hi: #d7f0d9;
+  --main-btn-lo: #aecdb0;
+  --on-main-btn: #1f3d2d;
+  --main-ring: #61a07d;
   --assist-bg: #21352a;
   --icon-tile: #253d30;
   --in: #9fd8b0;
@@ -1101,6 +1191,11 @@
   --coin-lo: #508367;
   --on-coin: #ffffff;
   --coin-ring: #e9f4eb;
+  --main-btn: #c6e9c8;
+  --main-btn-hi: #d7f0d9;
+  --main-btn-lo: #aecdb0;
+  --on-main-btn: #1f3d2d;
+  --main-ring: #61a07d;
   --assist-bg: #e3f0e7;
   --icon-tile: #cddfd3;
   --in: #2f7a4f;
@@ -1719,6 +1814,17 @@ html.amounts-hidden:not(.amounts-peeking) .money {
 .bell-ring {
   transform-origin: 50% 10%;
   animation: bell-ring 6s 3s infinite;
+}
+
+/* The + button in the middle of the dock: the coin unless an appearance gives it its own colour. */
+.coin.coin-main {
+  color: var(--on-main-btn);
+  background: radial-gradient(circle at 35% 30%, var(--main-btn-hi), var(--main-btn) 55%, var(--main-btn-lo));
+}
+
+.coin-main.coin-ping::after,
+.coin-main .coin-ping::after {
+  border-color: var(--main-btn);
 }
 
 /* ---------- Voice entry: the orb ---------- */
