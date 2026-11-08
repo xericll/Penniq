@@ -14,15 +14,15 @@ const T = [
   { id: 'ember', ar: 'تيراكوتا ليلي', de: 'Terrakotta Nacht', en: 'Terracotta Night', dark: true, bg: '#1f1e1d', surface: '#2a2927', ink: '#f4f0e8',
     note: '#ad4f2c', note2: '#8f3d20', noteHi: '#c8673f', noteInk: '#fff1e6', noteFoil: '#ffb48a', noteBank: '#f6d9c6',
     coin: '#d97757', dock: '#141413', navOn: '#e8875f', cash: '#e08a64', bank: '#d9b8a3', leaf: '#c4623f', inc: '#8fcb9b', out: '#ef8a6d' },
-  // Shavin (8 November 2026): the user's palette Pistachio Milk #C9D8A5, Rice Paper #F2EBD8 and Wasabi Pop #C6D94C, on a deep green night.
-  // The banknote and the buttons are a deeper wasabi green so their text is white (the user asked for white, not black, text).
-  { id: 'shavin', ar: 'شافين', de: 'Shavin', en: 'Shavin', dark: true, bg: '#141a12', surface: '#1d251a', ink: '#f2ebd8',
-    note: '#5c7a1a', note2: '#466012', noteHi: '#6f9124', noteInk: '#f8faec', noteFoil: '#d6e872', noteBank: '#d6e872', chip: '#3c5410', chipInk: '#f1f6d2',
-    coin: '#5c7a1a', onCoin: '#f8faec', dock: '#0c110a', navOn: '#c6d94c', cash: '#c6d94c', bank: '#c9d8a5', leaf: '#7d9a2a', inc: '#9fd88a', out: '#f0937a' },
-  // Shavin by day: the same greens on a rice-paper page tinted with pistachio.
-  { id: 'pistachio', ar: 'شافين', de: 'Shavin', en: 'Shavin', bg: '#eef0dc', surface: '#f8f6ea', ink: '#1d2812',
-    note: '#5c7a1a', note2: '#466012', noteHi: '#6f9124', noteInk: '#f8faec', noteFoil: '#d6e872', noteBank: '#d6e872', chip: '#3c5410', chipInk: '#f1f6d2',
-    coin: '#5c7a1a', onCoin: '#f8faec', dock: '#1d2812', navOn: '#c6d94c', cash: '#5c7a1a', bank: '#6b8748', leaf: '#7d9a2a', inc: '#2f7a3f', out: '#b0452c' },
+  // Shavin (8 November 2026), retuned the same day to the user's second palette: mint #C6E9C8 and jade #61A07D.
+  // The banknote and buttons are a deeper jade so their text is white (the user asked for white text); mint lights the threads and accents.
+  { id: 'shavin', ar: 'شافين', de: 'Shavin', en: 'Shavin', dark: true, bg: '#0f1a15', surface: '#16241d', ink: '#eef6ef',
+    note: '#3f7a5a', note2: '#2f6448', noteHi: '#4f8e6b', noteInk: '#f4fbf5', noteFoil: '#c6e9c8', noteBank: '#c6e9c8', chip: '#2a5640', chipInk: '#e6f6e7',
+    coin: '#3f7a5a', onCoin: '#f4fbf5', dock: '#0a120e', navOn: '#c6e9c8', cash: '#61a07d', bank: '#c6e9c8', leaf: '#61a07d', inc: '#9fd8b0', out: '#f0937a' },
+  // Shavin by day: the same jade banknote on a mint-tinted page.
+  { id: 'pistachio', ar: 'شافين', de: 'Shavin', en: 'Shavin', bg: '#e6f3e8', surface: '#f5fbf5', ink: '#13261c',
+    note: '#3f7a5a', note2: '#2f6448', noteHi: '#4f8e6b', noteInk: '#f4fbf5', noteFoil: '#c6e9c8', noteBank: '#c6e9c8', chip: '#2a5640', chipInk: '#e6f6e7',
+    coin: '#3f7a5a', onCoin: '#f4fbf5', dock: '#13261c', navOn: '#c6e9c8', cash: '#3f7a5a', bank: '#4f8a6a', leaf: '#61a07d', inc: '#2f7a4f', out: '#b0452c' },
   // Brand appearances
   { id: 'parchment', brand: true, bg: '#efeadf', surface: '#f8f5ee', ink: '#26271a', note: '#515233', note2: '#3f4027', noteInk: '#f3eee2', noteFoil: '#c2a97d', coin: '#c2a97d', dock: '#2a2b1b', navOn: '#d9c39a', cash: '#8a6d46', bank: '#515233', inc: '#3d6b3f', out: '#a3472f' },
   { id: 'navy', brand: true, dark: true, bg: '#1a2030', surface: '#222a3b', ink: '#efeadf', note: '#34436a', note2: '#232d47', noteInk: '#f4efe4', noteFoil: '#c2a97d', coin: '#c2a97d', dock: '#11151f', navOn: '#e2cfa6', cash: '#c2a97d', bank: '#8f9bb8', inc: '#7cb894', out: '#e3907a' },
