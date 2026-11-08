@@ -1,4 +1,5 @@
 import { arFeatures, deFeatures, enFeatures } from './features';
+import { arVoice, deVoice, enVoice } from './voice';
 import { arWorkspaces, deWorkspaces, enWorkspaces } from './workspaces';
 import type { Language } from './types';
 
@@ -176,7 +177,7 @@ const ar = {
 
   'settings.title': 'الإعدادات',
   'settings.appearance': 'المظهر',
-  'settings.appearanceHint': 'ثلاثة مظاهر من هوية Penniq',
+  'settings.appearanceHint': 'لكل مظهر ألوانه، والتطبيق يلبسه فوراً',
   'settings.language': 'اللغة',
   'settings.privacy': 'الخصوصية',
   'settings.hideAmounts': 'إخفاء المبالغ',
@@ -534,6 +535,7 @@ const ar = {
   'debt.toast.reduced': 'نقص دين {person} بمقدار {amount}',
   ...arFeatures,
   ...arWorkspaces,
+  ...arVoice,
 };
 
 export type TranslationKey = keyof typeof ar;
@@ -713,7 +715,7 @@ const de: Dictionary = {
 
   'settings.title': 'Einstellungen',
   'settings.appearance': 'Darstellung',
-  'settings.appearanceHint': 'Drei Erscheinungsbilder der Marke Penniq',
+  'settings.appearanceHint': 'Jedes mit eigenen Farben – die App wechselt sofort',
   'settings.language': 'Sprache',
   'settings.privacy': 'Privatsphäre',
   'settings.hideAmounts': 'Beträge verbergen',
@@ -1089,6 +1091,7 @@ const de: Dictionary = {
   'debt.toast.reduced': 'Schuld bei {person} um {amount} verringert',
   ...deFeatures,
   ...deWorkspaces,
+  ...deVoice,
 };
 
 const en: Dictionary = {
@@ -1265,7 +1268,7 @@ const en: Dictionary = {
 
   'settings.title': 'Settings',
   'settings.appearance': 'Appearance',
-  'settings.appearanceHint': 'Three appearances of the Penniq brand',
+  'settings.appearanceHint': 'Each with its own colours – the app changes at once',
   'settings.language': 'Language',
   'settings.privacy': 'Privacy',
   'settings.hideAmounts': 'Hide amounts',
@@ -1635,6 +1638,7 @@ const en: Dictionary = {
   'debt.toast.reduced': 'Lowered {person}’s debt by {amount}',
   ...enFeatures,
   ...enWorkspaces,
+  ...enVoice,
 };
 
 export const translations: Record<Language, Dictionary> = { ar, de, en };

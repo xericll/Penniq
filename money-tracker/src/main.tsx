@@ -25,6 +25,26 @@ import { ToastProvider } from './state/ToastContext';
 import { WalletProvider } from './state/WalletContext';
 import { ThemeProvider } from './theme/ThemeContext';
 
+/* Smoothness: the swaying leaves, the note's light and the coin pause while the page scrolls
+   (so every frame goes to the scroll) and while the app is in the background (no work at all). */
+{
+  const root = document.documentElement;
+  let rest: number | undefined;
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (rest === undefined) root.classList.add('is-scrolling');
+      window.clearTimeout(rest);
+      rest = window.setTimeout(() => {
+        root.classList.remove('is-scrolling');
+        rest = undefined;
+      }, 160);
+    },
+    { passive: true, capture: true },
+  );
+  document.addEventListener('visibilitychange', () => root.classList.toggle('page-hidden', document.hidden));
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <LanguageProvider>

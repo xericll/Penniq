@@ -1,13 +1,13 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowDownLeft, ArrowLeftRight, ArrowUpRight, ChevronLeft, Coins, Gem, Target } from 'lucide-react';
-import { useMemo, type CSSProperties, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type CSSProperties, type ReactNode } from 'react';
 import { BalanceNote } from '../components/home/BalanceNote';
 import { Pockets } from '../components/home/Pockets';
 import { EssentialsCard, Reserves } from '../components/home/Reserves';
 import { TemplateRail } from '../components/planner/QuickRecord';
 import { WorkspaceChip } from '../components/sheets/WorkspaceSheets';
 import { TxRow } from '../components/tx/TxRow';
-import { AssistantButton } from '../components/ui/AssistantButton';
+import { AssistantButton, VoiceButton } from '../components/ui/AssistantButton';
 import { Guilloche } from '../components/ui/Engraving';
 import { Logo } from '../components/ui/Logo';
 import { OliveBranch } from '../components/ui/Olive';
@@ -21,6 +21,10 @@ import { usePlanner } from '../state/PlannerContext';
 import { useWallet } from '../state/WalletContext';
 import type { AccountType, Tab, Transaction, TransactionType } from '../types';
 import { useNetWorth } from '../hooks/useNetWorth';
+import { useEntrance } from '../hooks/useEntrance';
+
+/** Whether Home is appearing for the first time this session (its entrance plays only then). */
+const Entrance = createContext(true);
 
 interface HomeProps {
   onCompose: (type: TransactionType, account?: AccountType) => void;
@@ -33,6 +37,7 @@ interface HomeProps {
   onEssentials: () => void;
   onCurrency: () => void;
   onAssistant: () => void;
+  onVoice: () => void;
 }
 
 export function Home({
@@ -46,6 +51,7 @@ export function Home({
   onEssentials,
   onCurrency,
   onAssistant,
+  onVoice,
 }: HomeProps) {
   const { t, info, dateLabel } = useI18n();
   const { transactions, budget } = useWallet();
@@ -55,135 +61,141 @@ export function Home({
   const hour = new Date().getHours();
   const greeting = hour < 12 ? t('greet.morning') : hour < 17 ? t('greet.afternoon') : t('greet.evening');
   const empty = transactions.length === 0;
+  const first = useEntrance();
 
   return (
-    <div className="relative isolate space-y-4">
-      <header className="relative z-10">
-        <div className="flex h-11 items-center justify-between">
-          <Logo variant="mark" size={36} className="lg:invisible" />
-          <AssistantButton onClick={onAssistant} />
-        </div>
-        <h1 className="mt-1.5 text-[32px] leading-[1.25] font-bold lg:text-[40px]">
-          <RevealWords text={greeting} />
-        </h1>
-        <motion.p
-          className="font-display mt-1.5 mb-2 text-[16px] text-ink-3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          {dateLabel(new Date())}
-        </motion.p>
-        <WorkspaceChip className="mt-3" />
-      </header>
+    <Entrance.Provider value={first}>
+      <div className={`relative isolate space-y-4 ${first ? '' : 'entered'}`}>
+        <header className="relative z-10">
+          <div className="flex h-11 items-center justify-between">
+            <Logo variant="mark" size={36} className="lg:invisible" />
+            <div className="flex items-center gap-2">
+              <VoiceButton onClick={onVoice} />
+              <AssistantButton onClick={onAssistant} />
+            </div>
+          </div>
+          <h1 className="mt-1.5 text-[32px] leading-[1.25] font-bold lg:text-[40px]">
+            <RevealWords text={greeting} />
+          </h1>
+          <motion.p
+            className="font-display mt-1.5 mb-2 text-[16px] text-ink-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            {dateLabel(new Date())}
+          </motion.p>
+          <WorkspaceChip className="mt-3" />
+        </header>
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-start lg:gap-6">
-        <div className="relative space-y-3">
-          {/* An olive branch reaches in from the edge and rests on the note (in front of it). */}
-          <OliveBranch kind="hero" className="absolute -end-5 -top-[78px] z-20 w-[185px] sm:-end-7 lg:hidden ltr:scale-x-[-1]" />
-          {/* A sprig tucked behind the cards lower down. */}
-          <OliveBranch kind="corner" className="absolute -start-4 bottom-[6%] -z-10 w-[150px] sm:-start-6 ltr:scale-x-[-1]" />
-          <Reveal i={0}>
-            <BalanceNote monthNet={summary.month.net} />
-          </Reveal>
-
-          {empty && (
-            <Reveal i={1}>
-              <Onboarding onOpening={onOpening} onFirst={() => onCompose('income')} onCurrency={onCurrency} />
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-start lg:gap-6">
+          <div className="relative space-y-3">
+            {/* An olive branch reaches in from the edge and rests on the note (in front of it). */}
+            <OliveBranch kind="hero" className="absolute -end-5 -top-[78px] z-20 w-[185px] sm:-end-7 lg:hidden ltr:scale-x-[-1]" />
+            {/* A sprig tucked behind the cards lower down. */}
+            <OliveBranch kind="corner" className="absolute -start-4 bottom-[6%] -z-10 w-[150px] sm:-start-6 ltr:scale-x-[-1]" />
+            <Reveal i={0}>
+              <BalanceNote monthNet={summary.month.net} />
             </Reveal>
-          )}
 
-          <Reveal i={1}>
-            <Pockets onOpenAccount={onOpenAccount} onTransfer={() => onCompose('transfer')} />
-          </Reveal>
-
-          <Reveal i={2}>
-            <div className="grid grid-cols-3 gap-2.5">
-              <ActionButton
-                label={t('common.expense')}
-                icon={<ArrowUpRight className="size-[23px] text-coin" strokeWidth={1.5} />}
-                onClick={() => onCompose('expense')}
-              />
-              <ActionButton
-                label={t('common.income')}
-                icon={<ArrowDownLeft className="size-[23px]" strokeWidth={1.5} />}
-                onClick={() => onCompose('income')}
-              />
-              <ActionButton
-                label={t('common.transfer')}
-                icon={<ArrowLeftRight className="size-[23px]" strokeWidth={1.5} />}
-                onClick={() => onCompose('transfer')}
-              />
-            </div>
-            <div className="mt-4">
-              <TemplateRail />
-            </div>
-          </Reveal>
-
-          <MoneyLeak onOpen={() => onNavigate('insights')} />
-
-          <Reveal i={3}>
-            <Reserves onVault={onVault} onDebts={onDebts} />
-          </Reveal>
-
-          <Reveal i={4}>
-            <WealthCard onOpen={() => onNavigate('wealth')} />
-          </Reveal>
-
-          <Reveal i={4}>
-            <EssentialsCard onOpen={onEssentials} />
-          </Reveal>
-        </div>
-
-        <div className="space-y-4">
-          {empty ? null : (
-            <>
-              <Reveal i={3}>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('insights')}
-                  className="card press grid w-full grid-cols-3 divide-x divide-line p-0 text-start hover:border-line-strong"
-                >
-                  <Stat label={t('home.today')}>
-                    <Money value={summary.today.net} sign tone className="text-[16px] font-semibold" />
-                  </Stat>
-                  <Stat label={t('home.thisMonth')}>
-                    <span className="flex flex-col leading-tight">
-                      <Money value={summary.month.income} sign className="text-[13px] font-medium text-in" />
-                      <Money value={-summary.month.expense} className="text-[13px] font-medium text-out" />
-                    </span>
-                  </Stat>
-                  <BudgetStat budget={budget} spent={summary.month.expense} />
-                </button>
+            {empty && (
+              <Reveal i={1}>
+                <Onboarding onOpening={onOpening} onFirst={() => onCompose('income')} onCurrency={onCurrency} />
               </Reveal>
+            )}
 
-              <Reveal i={4}>
-                <section className="card p-2" aria-labelledby="recent-title">
-                  <div className="flex items-center justify-between px-3 pt-2 pb-1">
-                    <h2 id="recent-title" className="text-[15px] font-semibold">
-                      {t('home.recent')}
-                    </h2>
-                    <button
-                      type="button"
-                      onClick={() => onNavigate('activity')}
-                      className="press -me-1 flex min-h-11 items-center gap-1 rounded-xl px-2 text-[14px] font-medium text-foil"
-                    >
-                      {t('common.seeAll')}
-                      <ChevronLeft className="size-4 ltr:rotate-180" aria-hidden />
-                    </button>
-                  </div>
-                  <div>
-                    {recent.map((tx) => (
-                      <TxRow key={tx.id} tx={tx} onOpen={onOpenTx} />
-                    ))}
-                  </div>
-                </section>
-              </Reveal>
-            </>
-          )}
+            <Reveal i={1}>
+              <Pockets onOpenAccount={onOpenAccount} onTransfer={() => onCompose('transfer')} />
+            </Reveal>
+
+            <Reveal i={2}>
+              <div className="grid grid-cols-3 gap-2.5">
+                <ActionButton
+                  label={t('common.expense')}
+                  icon={<ArrowUpRight className="size-[23px] text-coin" strokeWidth={1.5} />}
+                  onClick={() => onCompose('expense')}
+                />
+                <ActionButton
+                  label={t('common.income')}
+                  icon={<ArrowDownLeft className="size-[23px]" strokeWidth={1.5} />}
+                  onClick={() => onCompose('income')}
+                />
+                <ActionButton
+                  label={t('common.transfer')}
+                  icon={<ArrowLeftRight className="size-[23px]" strokeWidth={1.5} />}
+                  onClick={() => onCompose('transfer')}
+                />
+              </div>
+              <div className="mt-4">
+                <TemplateRail />
+              </div>
+            </Reveal>
+
+            <MoneyLeak onOpen={() => onNavigate('insights')} />
+
+            <Reveal i={3}>
+              <Reserves onVault={onVault} onDebts={onDebts} />
+            </Reveal>
+
+            <Reveal i={4}>
+              <WealthCard onOpen={() => onNavigate('wealth')} />
+            </Reveal>
+
+            <Reveal i={4}>
+              <EssentialsCard onOpen={onEssentials} />
+            </Reveal>
+          </div>
+
+          <div className="space-y-4">
+            {empty ? null : (
+              <>
+                <Reveal i={3}>
+                  <button
+                    type="button"
+                    onClick={() => onNavigate('insights')}
+                    className="card press grid w-full grid-cols-3 divide-x divide-line p-0 text-start hover:border-line-strong"
+                  >
+                    <Stat label={t('home.today')}>
+                      <Money value={summary.today.net} sign tone className="text-[16px] font-semibold" />
+                    </Stat>
+                    <Stat label={t('home.thisMonth')}>
+                      <span className="flex flex-col leading-tight">
+                        <Money value={summary.month.income} sign className="text-[13px] font-medium text-in" />
+                        <Money value={-summary.month.expense} className="text-[13px] font-medium text-out" />
+                      </span>
+                    </Stat>
+                    <BudgetStat budget={budget} spent={summary.month.expense} />
+                  </button>
+                </Reveal>
+
+                <Reveal i={4}>
+                  <section className="card p-2" aria-labelledby="recent-title">
+                    <div className="flex items-center justify-between px-3 pt-2 pb-1">
+                      <h2 id="recent-title" className="text-[15px] font-semibold">
+                        {t('home.recent')}
+                      </h2>
+                      <button
+                        type="button"
+                        onClick={() => onNavigate('activity')}
+                        className="press -me-1 flex min-h-11 items-center gap-1 rounded-xl px-2 text-[14px] font-medium text-foil"
+                      >
+                        {t('common.seeAll')}
+                        <ChevronLeft className="size-4 ltr:rotate-180" aria-hidden />
+                      </button>
+                    </div>
+                    <div>
+                      {recent.map((tx) => (
+                        <TxRow key={tx.id} tx={tx} onOpen={onOpenTx} />
+                      ))}
+                    </div>
+                  </section>
+                </Reveal>
+              </>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </Entrance.Provider>
   );
 }
 
@@ -222,9 +234,10 @@ function Onboarding({ onOpening, onFirst, onCurrency }: { onOpening: () => void;
 /** Cards arrive one after another, from soft focus to sharp. */
 function Reveal({ i, children }: { i: number; children: ReactNode }) {
   const reduced = useReducedMotion();
+  const first = useContext(Entrance);
   return (
     <motion.div
-      initial={reduced ? false : { opacity: 0, y: 20 }}
+      initial={reduced || !first ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 + i * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >

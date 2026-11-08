@@ -306,7 +306,7 @@ export interface Turn {
 export type AssistantFailure = 'off' | 'limit' | 'refused' | 'network';
 
 /** Reads the function's JSON answer whether the call succeeded or came back as an HTTP error. */
-async function payloadOf(data: unknown, error: unknown): Promise<{ status: number; body: Record<string, unknown> }> {
+export async function payloadOf(data: unknown, error: unknown): Promise<{ status: number; body: Record<string, unknown> }> {
   if (!error) return { status: 200, body: (data ?? {}) as Record<string, unknown> };
   const response = (error as { context?: unknown }).context;
   if (!(response instanceof Response)) return { status: 0, body: {} };

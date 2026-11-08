@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react';
 import { useRef, type PointerEvent } from 'react';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import { useEntrance } from '../../hooks/useEntrance';
 import { useI18n } from '../../i18n/LanguageContext';
 import { useWallet } from '../../state/WalletContext';
 import { Flow, FLOW_PINCH, Spark } from '../ui/Flow';
@@ -30,6 +31,7 @@ export function BalanceNote({ monthNet }: { monthNet: number }) {
   const { t, money } = useI18n();
   const { balances, transactions, pulses } = useWallet();
   const reduced = useReducedMotion();
+  const first = useEntrance();
   const ref = useRef<HTMLElement>(null);
   const totalPulses = pulses.filter((p) => p.target === 'total');
   const lastPulse = totalPulses[totalPulses.length - 1];
@@ -76,7 +78,7 @@ export function BalanceNote({ monthNet }: { monthNet: number }) {
 
   return (
     <motion.div
-      initial={reduced ? false : { opacity: 0, y: 26, scale: 0.97 }}
+      initial={reduced || !first ? false : { opacity: 0, y: 26, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
     >

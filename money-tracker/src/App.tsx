@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react';
+import { motion } from 'motion/react';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { ComposerIntent } from './components/composer/Composer';
 import { LockProvider } from './components/lock/AppLock';
@@ -34,6 +34,7 @@ const ReceiptSheet = lazy(() => import('./components/sheets/ReceiptSheet').then(
 const RemindersSheet = lazy(() => import('./components/sheets/RemindersSheet').then((m) => ({ default: m.RemindersSheet })));
 const ResetSheet = lazy(() => import('./components/sheets/ResetSheet').then((m) => ({ default: m.ResetSheet })));
 const SourcesSheet = lazy(() => import('./components/sheets/SourcesSheet').then((m) => ({ default: m.SourcesSheet })));
+const VoiceSheet = lazy(() => import('./components/sheets/VoiceSheet').then((m) => ({ default: m.VoiceSheet })));
 const SupportSheet = lazy(() => import('./components/sheets/SupportSheet').then((m) => ({ default: m.SupportSheet })));
 const VaultSheet = lazy(() => import('./components/sheets/VaultSheets').then((m) => ({ default: m.VaultSheet })));
 const Activity = lazy(() => import('./screens/Activity').then((m) => ({ default: m.Activity })));
@@ -79,6 +80,18 @@ function AfterFirstPaint({ children }: { children: ReactNode }) {
     };
   }, []);
   return ready ? <>{children}</> : null;
+}
+
+/** While a tab's code is still on its way (a slow connection): a quiet outline instead of an empty page. */
+function ScreenFallback() {
+  return (
+    <div className="space-y-4 pt-2" aria-hidden>
+      <div className="skeleton h-9 w-40 rounded-xl" />
+      <div className="skeleton h-28 rounded-[22px]" />
+      <div className="skeleton h-16 rounded-[22px]" />
+      <div className="skeleton h-16 rounded-[22px]" />
+    </div>
+  );
 }
 
 const TABS: Tab[] = ['home', 'activity', 'wealth', 'insights', 'settings'];
@@ -138,6 +151,11 @@ export default function App() {
   const today = useToday();
   const mainRef = useRef<HTMLElement>(null);
   const firstRender = useRef(true);
+  // The first screen is already under the splash: it needs no entrance of its own.
+  const firstScreen = useRef(true);
+  useEffect(() => {
+    firstScreen.current = false;
+  }, []);
 
   // Sheets
   const [composerOpen, setComposerOpen] = useState(false);
@@ -156,6 +174,7 @@ export default function App() {
   const [remindersOpen, setRemindersOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
+  const [voice, setVoice] = useState<{ open: boolean; listen: boolean }>({ open: false, listen: false });
   const [activityFocus, setActivityFocus] = useState<{ account: AccountType; nonce: number } | null>(null);
 
   // The planning tools: one window at a time. The last payload of each is kept so a window
@@ -199,6 +218,7 @@ export default function App() {
     return () => onLaunchAction(null);
   }, [compose]);
   const openAssistant = useCallback(() => setAssistantOpen(true), []);
+  const openVoice = useCallback(() => setVoice({ open: true, listen: true }), []);
 
   // Reminders only speak inside the wallet, never over the sign-in screen.
   const inWallet = auth.ready && !auth.needsAuth && !auth.recovering;
@@ -217,6 +237,7 @@ export default function App() {
         onEssentials={() => setEssentialsOpen(true)}
         onCurrency={() => setCurrencyOpen(true)}
         onAssistant={openAssistant}
+        onVoice={openVoice}
       />
     ),
     activity: <Activity onOpenTx={openTx} onCompose={() => compose('expense')} focusAccount={activityFocus} />,
@@ -276,16 +297,14 @@ export default function App() {
               wide ? 'max-w-[560px] lg:max-w-[1080px]' : 'max-w-[560px] lg:max-w-[720px]'
             }`}
           >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={`${tab}:${today}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] } }}
-                exit={{ opacity: 0, y: -6, transition: { duration: 0.12 } }}
-              >
-                <Suspense fallback={null}>{screen}</Suspense>
-              </motion.div>
-            </AnimatePresence>
+            {/* The new tab appears at once and settles in; the old one does not hold it back with an exit. */}
+            <motion.div
+              key={`${tab}:${today}`}
+              initial={firstScreen.current ? false : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0, transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] } }}
+            >
+              <Suspense fallback={<ScreenFallback />}>{screen}</Suspense>
+            </motion.div>
           </div>
         </main>
 
@@ -302,6 +321,10 @@ export default function App() {
               suspended={listKind !== null}
               onIncome={(tx) => {
                 if (allocation.enabled) window.setTimeout(() => setTool({ name: 'split', tx }), 450);
+              }}
+              onVoice={() => {
+                setComposerOpen(false);
+                window.setTimeout(openVoice, 240);
               }}
               onScan={(file) => {
                 setComposerOpen(false);
@@ -353,6 +376,7 @@ export default function App() {
             <RemindersSheet open={remindersOpen} onClose={() => setRemindersOpen(false)} />
             <AssistantSheet open={assistantOpen} onClose={() => setAssistantOpen(false)} />
             <SupportSheet open={supportOpen} onClose={() => setSupportOpen(false)} />
+            <VoiceSheet open={voice.open} autoStart={voice.listen} onClose={() => setVoice({ open: false, listen: false })} />
             <AdoptSheet />
           </Suspense>
           <ToolSheets tool={tool} kept={kept} onClose={tools.close} />

@@ -11,6 +11,7 @@ import {
   Plus,
   Wallet,
   Zap,
+  Mic,
 } from 'lucide-react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useI18n } from '../../i18n/LanguageContext';
@@ -47,11 +48,13 @@ interface ComposerProps {
   onIncome?: (tx: Transaction) => void;
   /** A receipt photo was picked: it is read and offered for review elsewhere. */
   onScan?: (file: File) => void;
+  /** Switch to voice entry. */
+  onVoice?: () => void;
 }
 
 const MAX_INT_DIGITS = 9;
 
-export function Composer({ open, intent, onClose, onEditList, suspended = false, onIncome, onScan }: ComposerProps) {
+export function Composer({ open, intent, onClose, onEditList, suspended = false, onIncome, onScan, onVoice }: ComposerProps) {
   const { t, lang, money, accountName, currencySymbol, symbolFirst, localize } = useI18n();
   const { balances, quickAmounts, incomeSources, expenseSources, add, remove } = useWallet();
   const toast = useToast();
@@ -275,29 +278,46 @@ export function Composer({ open, intent, onClose, onEditList, suspended = false,
       footer={footer}
       bodyClassName="space-y-4"
       headerExtra={
-        OCR_AVAILABLE && onScan && type === 'expense' ? (
-          <>
+        <>
+          {onVoice && (
             <button
               type="button"
-              onClick={() => cameraRef.current?.click()}
+              onClick={() => {
+                haptic('tap');
+                onVoice();
+              }}
+              aria-label={t('voice.open')}
+              title={t('voice.open')}
               className="press flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong px-3 text-[14px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"
             >
-              <Camera className="size-[18px] text-foil" aria-hidden />
-              {t('scan.button')}
+              <Mic className="size-[18px] text-foil" aria-hidden />
+              {t('voice.short')}
             </button>
-            <input
-              ref={cameraRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                e.target.value = '';
-                if (file) onScan(file);
-              }}
-            />
-          </>
-        ) : undefined
+          )}
+          {OCR_AVAILABLE && onScan && type === 'expense' && (
+            <>
+              <button
+                type="button"
+                onClick={() => cameraRef.current?.click()}
+                className="press flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong px-3 text-[14px] font-medium text-ink-2 hover:bg-surface-2 hover:text-ink"
+              >
+                <Camera className="size-[18px] text-foil" aria-hidden />
+                {t('scan.button')}
+              </button>
+              <input
+                ref={cameraRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = '';
+                  if (file) onScan(file);
+                }}
+              />
+            </>
+          )}
+        </>
       }
     >
       <Segmented

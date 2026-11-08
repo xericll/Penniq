@@ -10,6 +10,7 @@ import {
   Zap,
   CalendarClock,
   Check,
+  ChevronDown,
   ChevronLeft,
   Cloud,
   CloudAlert,
@@ -32,6 +33,7 @@ import {
   UserRound,
   Wallet,
 } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useAppLock } from '../components/lock/AppLock';
 import { useShareApp } from '../components/planner/ShareRate';
@@ -98,11 +100,7 @@ export function Settings({ onEditList, onCorrect, onReset, onCurrency, onReminde
       <Group title={t('settings.appearance')} hint={t('settings.appearanceHint')}>
         <div className="space-y-3.5 p-3">
           <AutoEdition active={pref === 'auto'} onSelect={() => setPref('auto')} />
-          <div className="grid grid-cols-3 gap-x-2.5 gap-y-3 sm:gap-x-3">
-            {EDITIONS.map((e) => (
-              <EditionTile key={e.id} id={e.id} label={t(e.labelKey)} active={pref === e.id} onSelect={setPref} />
-            ))}
-          </div>
+          <EditionGrid pref={pref} onSelect={setPref} />
         </div>
       </Group>
 
@@ -308,7 +306,7 @@ export function Settings({ onEditList, onCorrect, onReset, onCurrency, onReminde
         <Logo size={24} />
         <p className="text-[13px] text-ink-3">{t('app.tagline')}</p>
         <p className="serial text-ink-3" dir="ltr">
-          MINT EDITION · v{APP_VERSION}
+          PENNIQ · v{APP_VERSION}
         </p>
       </footer>
     </div>
@@ -609,6 +607,82 @@ function AutoEdition({ active, onSelect }: { active: boolean; onSelect: () => vo
         {active && <Check className="size-3.5" strokeWidth={3} />}
       </span>
     </button>
+  );
+}
+
+/** How many appearances show before "show all". */
+const PREVIEW = 3;
+
+/** The first three appearances, and the rest behind one button (it opens in place, with the current one named if it is hidden). */
+function EditionGrid({ pref, onSelect }: { pref: ThemePref; onSelect: (id: ThemePref) => void }) {
+  const { t } = useI18n();
+  const [all, setAll] = useState(false);
+  const first = EDITIONS.slice(0, PREVIEW);
+  const rest = EDITIONS.slice(PREVIEW);
+  const hidden = !all ? rest.find((e) => e.id === pref) : undefined;
+  const tile = (e: (typeof EDITIONS)[number]) => (
+    <EditionTile key={e.id} id={e.id} label={t(e.labelKey)} active={pref === e.id} onSelect={onSelect} />
+  );
+
+  return (
+    <div>
+      <div className="grid grid-cols-3 gap-x-2.5 gap-y-3 sm:gap-x-3">{first.map(tile)}</div>
+      <AnimatePresence initial={false}>
+        {all && (
+          <motion.div
+            key="more"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1, transition: { duration: 0.34, ease: [0.22, 1, 0.36, 1] } }}
+            exit={{ height: 0, opacity: 0, transition: { duration: 0.22, ease: [0.4, 0, 1, 1] } }}
+            className="-mx-1.5 overflow-hidden px-1.5"
+          >
+            <div className="grid grid-cols-3 gap-x-2.5 gap-y-3 pt-3 pb-1.5 sm:gap-x-3">{rest.map(tile)}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <button
+        type="button"
+        aria-expanded={all}
+        onClick={() => {
+          haptic('select');
+          setAll((v) => !v);
+        }}
+        className="press mt-3 flex min-h-12 w-full items-center gap-3 rounded-2xl border border-line px-3 text-start hover:border-line-strong hover:bg-surface-2/60"
+      >
+        {!all && (
+          <span className="flex shrink-0 -space-x-2 rtl:space-x-reverse" aria-hidden>
+            {rest.slice(0, 4).map((e) => (
+              <span
+                key={e.id}
+                data-edition={e.id}
+                className="size-6 rounded-full"
+                style={{
+                  background: 'radial-gradient(circle at 70% 25%, var(--note-bg-2), var(--note-bg) 70%)',
+                  boxShadow: '0 0 0 2px var(--surface)',
+                }}
+              />
+            ))}
+          </span>
+        )}
+        <span className="min-w-0 flex-1">
+          <span className="block text-[14px] font-semibold">
+            {t(all ? 'settings.showLess' : 'settings.showMore')}
+            {!all && (
+              <bdi
+                className="ms-2 inline-block rounded-full bg-surface-2 px-2 py-px align-middle text-[12px] font-medium text-ink-2 tabular"
+                dir="ltr"
+              >
+                {t('settings.moreCount', { count: rest.length })}
+              </bdi>
+            )}
+          </span>
+          {hidden && (
+            <span className="mt-0.5 block truncate text-[12px] text-ink-3">{t('settings.current', { name: t(hidden.labelKey) })}</span>
+          )}
+        </span>
+        <ChevronDown className={`size-4 shrink-0 text-ink-3 transition-transform duration-300 ${all ? 'rotate-180' : ''}`} aria-hidden />
+      </button>
+    </div>
   );
 }
 

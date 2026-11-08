@@ -181,7 +181,7 @@ export function Sheet({
       {open && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center lg:items-center lg:p-6">
           <motion.div
-            className="absolute inset-0 backdrop-blur-[3px]"
+            className="absolute inset-0"
             style={{ background: 'var(--scrim)' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
