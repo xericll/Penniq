@@ -963,6 +963,120 @@
   --grain-opacity: 0.04;
 }
 
+[data-edition="ember"] {
+  color-scheme: dark;
+  --bg: #1f1e1d;
+  --bg-elev: #252422;
+  --surface: #2a2927;
+  --surface-2: #383735;
+  --line: rgba(244, 240, 232, 0.1);
+  --line-strong: rgba(244, 240, 232, 0.19);
+  --ink: #f4f0e8;
+  --ink-2: #cbc8c1;
+  --ink-3: #a3a19c;
+  --foil: #d97757;
+  --foil-hi: #e4a089;
+  --foil-lo: #ae5f46;
+  --on-foil: #1f1e1d;
+  --primary: #d97757;
+  --primary-hi: #de8a6f;
+  --primary-lo: #b66449;
+  --on-primary: #1f1e1d;
+  --coin: #d97757;
+  --coin-hi: #e4a089;
+  --coin-lo: #b26247;
+  --on-coin: #1f1e1d;
+  --coin-ring: #1f1e1d;
+  --assist-bg: #43342e;
+  --icon-tile: #4e3c33;
+  --in: #8fcb9b;
+  --out: #ef8a6d;
+  --cash: #e08a64;
+  --bank: #d9b8a3;
+  --note-bg: #ad4f2c;
+  --note-bg-2: #8f3d20;
+  --note-ink: #fff1e6;
+  --note-ink-2: #fcebdf;
+  --note-line: rgba(255, 180, 138, 0.32);
+  --note-foil: #ffb48a;
+  --note-hi: #c8673f;
+  --note-bank: #f6d9c6;
+  --note-shadow: 0 22px 40px -22px rgba(0, 0, 0, 0.7);
+  --note-chip: #f7e1d3;
+  --note-chip-ink: #36170c;
+  --nav-bg: #141413;
+  --nav-ink: #a6a6a5;
+  --nav-ink-on: #e8875f;
+  --leaf-a: #8f3d20;
+  --leaf-b: #c4623f;
+  --leaf-c: #ca8d76;
+  --leaf-d: #e0bcaf;
+  --stem: #7e361c;
+  --leaf-shadow: rgba(0, 0, 0, 0.42);
+  --leaf-opacity: 0.85;
+  --fruit-opacity: 0;
+  --scrim: rgba(16, 15, 15, 0.62);
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 18px 40px -24px rgba(0, 0, 0, 0.75);
+  --grain-opacity: 0.04;
+}
+
+[data-edition="shavin"] {
+  color-scheme: dark;
+  --bg: #141a12;
+  --bg-elev: #192016;
+  --surface: #1d251a;
+  --surface-2: #2c3327;
+  --line: rgba(242, 235, 216, 0.1);
+  --line-strong: rgba(242, 235, 216, 0.19);
+  --ink: #f2ebd8;
+  --ink-2: #c2beae;
+  --ink-3: #9c9a8b;
+  --foil: #c6d94c;
+  --foil-hi: #d7e482;
+  --foil-lo: #9eae3d;
+  --on-foil: #141a12;
+  --primary: #c6d94c;
+  --primary-hi: #cede65;
+  --primary-lo: #a6b640;
+  --on-primary: #141a12;
+  --coin: #c6d94c;
+  --coin-hi: #d7e482;
+  --coin-lo: #a2b23e;
+  --on-coin: #141a12;
+  --coin-ring: #141a12;
+  --assist-bg: #353e21;
+  --icon-tile: #3f4924;
+  --in: #9fd88a;
+  --out: #f0937a;
+  --cash: #c6d94c;
+  --bank: #c9d8a5;
+  --note-bg: #c6d94c;
+  --note-bg-2: #adc13a;
+  --note-ink: #1b2410;
+  --note-ink-2: #3d481c;
+  --note-line: rgba(61, 90, 36, 0.32);
+  --note-foil: #3d5a24;
+  --note-hi: #d8e872;
+  --note-bank: #2e3d1c;
+  --note-shadow: 0 22px 40px -22px rgba(0, 0, 0, 0.7);
+  --note-chip: #e9f0bd;
+  --note-chip-ink: #24320f;
+  --nav-bg: #0c110a;
+  --nav-ink: #a3a5a2;
+  --nav-ink-on: #c6d94c;
+  --leaf-a: #adc13a;
+  --leaf-b: #b5ca44;
+  --leaf-c: #dae68b;
+  --leaf-d: #e9f1bb;
+  --stem: #98aa33;
+  --leaf-shadow: rgba(0, 0, 0, 0.42);
+  --leaf-opacity: 0.85;
+  --fruit-opacity: 0;
+  --scrim: rgba(10, 13, 9, 0.62);
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 18px 40px -24px rgba(0, 0, 0, 0.75);
+  --grain-opacity: 0.04;
+}
+
 /* Unlayered on purpose: wins over any host page reset that loads before this sheet. */
 html,
 body {

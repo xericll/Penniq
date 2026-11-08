@@ -10,6 +10,14 @@ const T = [
     note: '#c95d37', note2: '#bf532b', noteHi: '#d6714a', noteInk: '#ffe4c8', noteInk2: '#ffdbbd', noteFoil: '#fea776', noteBank: '#fbe8d8', chip: '#f0d8c5', chipInk: '#3a2615',
     coin: '#df7847', onCoin: '#fff0de', coinRing: '#fbe4d0', assist: '#f3e0d2', dock: '#392e2b', navInk: '#efe4dc', navOn: '#ef8d5c', cash: '#c85d31', bank: '#c85d31',
     leaf: '#d76f42', iconTile: '#f2d0b5', grain: '0', line: 0.05, shadow: '0 1px 2px rgba(150, 95, 65, 0.1), 0 5px 13px rgba(150, 95, 65, 0.2)', noteShadow: '0 9px 20px -5px rgba(185, 85, 45, 0.42)', inc: '#3d7a4f', out: '#b9452a' },
+  // Terracotta's night (8 November 2026): the warm charcoal and coral of Claude's dark interface, with the terracotta banknote kept.
+  { id: 'ember', ar: 'تيراكوتا ليلي', de: 'Terrakotta Nacht', en: 'Terracotta Night', dark: true, bg: '#1f1e1d', surface: '#2a2927', ink: '#f4f0e8',
+    note: '#ad4f2c', note2: '#8f3d20', noteHi: '#c8673f', noteInk: '#fff1e6', noteFoil: '#ffb48a', noteBank: '#f6d9c6',
+    coin: '#d97757', dock: '#141413', navOn: '#e8875f', cash: '#e08a64', bank: '#d9b8a3', leaf: '#c4623f', inc: '#8fcb9b', out: '#ef8a6d' },
+  // Shavin (8 November 2026): the user's palette Pistachio Milk #C9D8A5, Rice Paper #F2EBD8 and Wasabi Pop #C6D94C, on a deep green night.
+  { id: 'shavin', ar: 'شافين', de: 'Shavin', en: 'Shavin', dark: true, bg: '#141a12', surface: '#1d251a', ink: '#f2ebd8',
+    note: '#c6d94c', note2: '#adc13a', noteHi: '#d8e872', noteInk: '#1b2410', noteFoil: '#3d5a24', noteBank: '#2e3d1c', chip: '#e9f0bd', chipInk: '#24320f',
+    coin: '#c6d94c', dock: '#0c110a', navOn: '#c6d94c', cash: '#c6d94c', bank: '#c9d8a5', leaf: '#b5ca44', inc: '#9fd88a', out: '#f0937a' },
   // Brand appearances
   { id: 'parchment', brand: true, bg: '#efeadf', surface: '#f8f5ee', ink: '#26271a', note: '#515233', note2: '#3f4027', noteInk: '#f3eee2', noteFoil: '#c2a97d', coin: '#c2a97d', dock: '#2a2b1b', navOn: '#d9c39a', cash: '#8a6d46', bank: '#515233', inc: '#3d6b3f', out: '#a3472f' },
   { id: 'navy', brand: true, dark: true, bg: '#1a2030', surface: '#222a3b', ink: '#efeadf', note: '#34436a', note2: '#232d47', noteInk: '#f4efe4', noteFoil: '#c2a97d', coin: '#c2a97d', dock: '#11151f', navOn: '#e2cfa6', cash: '#c2a97d', bank: '#8f9bb8', inc: '#7cb894', out: '#e3907a' },

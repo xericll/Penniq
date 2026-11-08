@@ -4,6 +4,8 @@ import { KEYS, read, write } from '../lib/storage';
 
 export type EditionId =
   | 'terracotta'
+  | 'ember'
+  | 'shavin'
   | 'parchment'
   | 'navy'
   | 'olive'
@@ -34,6 +36,8 @@ export interface Edition {
  */
 export const EDITIONS: Edition[] = [
   { id: 'terracotta', labelKey: 'theme.terracotta', dark: false },
+  { id: 'ember', labelKey: 'theme.ember', dark: true },
+  { id: 'shavin', labelKey: 'theme.shavin', dark: true },
   { id: 'parchment', labelKey: 'theme.parchment', dark: false },
   { id: 'navy', labelKey: 'theme.navy', dark: true },
   { id: 'olive', labelKey: 'theme.olive', dark: true },
@@ -52,7 +56,7 @@ export const EDITIONS: Edition[] = [
 ];
 
 /** What "auto" resolves to. */
-export const AUTO_EDITIONS: { dark: EditionId; light: EditionId } = { dark: 'navy', light: 'terracotta' };
+export const AUTO_EDITIONS: { dark: EditionId; light: EditionId } = { dark: 'ember', light: 'terracotta' };
 
 /** Theme ids saved by other versions of the app, mapped onto the closest appearance. */
 const LEGACY: Record<string, EditionId> = {
