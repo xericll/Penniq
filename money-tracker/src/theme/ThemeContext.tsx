@@ -6,6 +6,7 @@ export type EditionId =
   | 'terracotta'
   | 'ember'
   | 'shavin'
+  | 'pistachio'
   | 'parchment'
   | 'navy'
   | 'olive'
@@ -38,6 +39,7 @@ export const EDITIONS: Edition[] = [
   { id: 'terracotta', labelKey: 'theme.terracotta', dark: false },
   { id: 'ember', labelKey: 'theme.ember', dark: true },
   { id: 'shavin', labelKey: 'theme.shavin', dark: true },
+  { id: 'pistachio', labelKey: 'theme.pistachio', dark: false },
   { id: 'parchment', labelKey: 'theme.parchment', dark: false },
   { id: 'navy', labelKey: 'theme.navy', dark: true },
   { id: 'olive', labelKey: 'theme.olive', dark: true },
